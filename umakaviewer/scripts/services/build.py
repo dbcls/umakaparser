@@ -1,3 +1,5 @@
+# coding:utf-8
+
 from collections import defaultdict
 from rdflib import URIRef
 from rdflib.graph import Graph

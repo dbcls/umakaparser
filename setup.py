@@ -1,6 +1,14 @@
 from __future__ import absolute_import
 from __future__ import unicode_literals
 from setuptools import setup, find_packages
+import ast
+import re
+
+_version_re = re.compile(r'__version__\s+=\s+(.*)')
+
+with open('umakaviewer/__init__.py', 'rb') as f:
+    version = str(ast.literal_eval(_version_re.search(
+        f.read().decode('utf-8')).group(1)))
 
 
 def _requires_from_file(filename):
@@ -9,7 +17,7 @@ def _requires_from_file(filename):
 
 setup(
     name="umakaviewer",
-    version="0.0.1",
+    version=version,
     url="https://github.com/dbcls/umakaviewer",
     author="DBCLS",
     author_email="",

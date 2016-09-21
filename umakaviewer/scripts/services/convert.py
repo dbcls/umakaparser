@@ -1,3 +1,5 @@
+# coding:utf-8
+
 from rdflib.graph import Graph
 from .utils import get_type
 from os.path import splitext

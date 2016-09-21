@@ -1,3 +1,5 @@
+# coding:utf-8
+
 from rdflib.graph import Graph, URIRef, BNode
 from datetime import datetime
 import tempfile

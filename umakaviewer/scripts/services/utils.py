@@ -1,3 +1,5 @@
+# coding:utf-8
+
 from rdflib.plugins.parsers.ntriples import r_literal
 from rdflib import Literal
 from mimetypes import guess_type
