@@ -1,8 +1,7 @@
 import click
 from rdflib import URIRef
-from scripts.services import index_owl, build_sbm_model
-from scripts.services.utils import get_type
-from scripts.services.convert import convert2ttl
+from .scripts.services.utils import get_type
+from .scripts.services import index_owl, build_sbm_model
 
 
 @click.group()
