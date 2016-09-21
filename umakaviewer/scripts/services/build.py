@@ -17,9 +17,9 @@ def labels_lang(labels):
     return {literal.language if literal.language else '': literal for literal in labels}
 
 
-class ClassResource:
+class ClassResource(object):
     def __init__(self, uri):
-        super().__init__()
+        super(ClassResource, self).__init__()
         self.uri = uri
         self.label = []
         self.subClassOf = None
@@ -31,9 +31,9 @@ class ClassResource:
         return result
 
 
-class SMBResource:
+class SMBResource(object):
     def __init__(self, graph, node):
-        super().__init__()
+        super(SMBResource, self).__init__()
         self._graph = graph
         self._node = node
 
@@ -44,7 +44,7 @@ class SMBResource:
 class SBMClassPartition(SMBResource):
 
     def __init__(self, graph, node):
-        super().__init__(graph, node)
+        super(SBMClassPartition, self).__init__(graph, node)
         self.label = []
         self.subClassOf = None
         self.rhs = set()
@@ -95,7 +95,7 @@ CLASS_RELATION = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#cl
 class SBMPropertyPartition(SMBResource):
 
     def __init__(self, graph, node):
-        super().__init__(graph, node)
+        super(SBMPropertyPartition, self).__init__(graph, node)
         self.label = []
 
     @property
@@ -173,9 +173,9 @@ class SBMClassRelation(SMBResource):
         }
 
 
-class AssetReader:
+class AssetReader(object):
     def __init__(self, assets_dir):
-        super().__init__()
+        super(AssetReader, self).__init__()
         self.assets_dir = assets_dir
 
     def read_subject_object(self, filename, graph):
@@ -185,8 +185,8 @@ class AssetReader:
             with open(os.path.join(self.assets_dir, filename)) as fp:
                 for row in fp:
                     row = row.strip()
-                    yield tuple(map(lambda x: URIRef(x[1:-1]).n3(graph.namespace_manager).strip('<>'), row.split(maxsplit=1)))
-        except FileNotFoundError:
+                    yield tuple(map(lambda x: URIRef(x[1:-1]).n3(graph.namespace_manager).strip('<>'), row.split(' ', 1)))
+        except IOError:
             return
 
     def read_subject_literal(self, filename, graph):
@@ -196,9 +196,9 @@ class AssetReader:
             with open(os.path.join(self.assets_dir, filename)) as fp:
                 for row in fp:
                     row = row.strip()
-                    s, o = row.split(maxsplit=1)
+                    s, o = row.split(' ', 1)
                     yield URIRef(s[1:-1]).n3(graph.namespace_manager).strip('<>'), parse_literal(o)
-        except FileNotFoundError:
+        except IOError:
             return
 
     def load_prefix(self, graph):
@@ -208,7 +208,7 @@ class AssetReader:
             path = os.path.join(self.assets_dir, 'prefix.ttl')
             with open(path) as fp:
                 graph.parse(file=fp, format='turtle')
-        except FileNotFoundError:
+        except IOError:
             pass
 
 
@@ -332,7 +332,7 @@ def property_complete(properties, assets_dir):
 
     for row in open(os.path.join(assets_dir, 'label')):
         row = row.strip()
-        s, o = row.split(maxsplit=1)
+        s, o = row.split(' ', 1)
         s = URIRef(s[1:-1])
         if s in properties_map:
             properties_map[s].label.append(parse_literal(o))
