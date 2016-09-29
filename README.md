@@ -1,5 +1,5 @@
 # umakaviewer
-http://v.umaka.dbcls.jp/ にアップロードするためのデータを作成するパーサーを提供するコマンドラインツールです。
+http://v.umaka.dbcls.jp/ にアップロードするためのファイルを作成するパーサーを提供するコマンドラインツールです。
 
 # インストール
 `$ pip install umakaviewer`
@@ -13,7 +13,7 @@ http://v.umaka.dbcls.jp/ にアップロードするためのデータを作成�
 
 ファイル形式は現在Turtle形式にのみ対応しています。
 
-## アップロードするファイルを作成するまでの手順
+# アップロードするファイルを作成するまでの手順
 
 `$ umakaparser build_index {2のTurtleファイル} --dist {出力先のパス}`
 
@@ -21,5 +21,5 @@ http://v.umaka.dbcls.jp/ にアップロードするためのデータを作成�
 
 `$ umakaparser build {1のTurtleファイル} --assets {build_indexで作成されたディレクトリ} --dist {出力先のパス}`
 
-これによって作成されたJSONを、http://v.umaka.dbcls.jp/ でアップロードすることで、グラフで閲覧することができます。
+これによって作成されたJSONを、http://v.umaka.dbcls.jp/ でアップロードすることで、グラフとして閲覧することができます。
 各コマンドの詳しい使い方は`--help`オプションを与えることで見ることができます。
