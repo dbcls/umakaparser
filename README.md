@@ -1,5 +1,5 @@
 # umakaviewer
-http://v.umaka.dbcls.jp/ にアップロードするためのファイルを作成するコマンドラインツールです。
+https://umaka-viewer.dbcls.jp/ にアップロードするためのファイルを作成するコマンドラインツールです。
 
 # インストール
 `$ pip install umakaviewer`  
