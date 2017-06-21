@@ -21,7 +21,7 @@ https://umaka-viewer.dbcls.jp/ にアップロードするためのファイル�
 
 `$ umakaparser build {1のTurtleファイル} --assets {build_indexで作成されたディレクトリ} --dist {出力先のパス}`  
 
-これによって作成されたJSONを、http://v.umaka.dbcls.jp/ でアップロードすることで、グラフとして閲覧することができます。  
+これによって作成されたJSONを、https://umaka-viewer.dbcls.jp/ でアップロードすることで、グラフとして閲覧することができます。  
 各コマンドの使い方は`--help`オプションを与えることで見ることができます。
 
 ## トラブルシューティング
