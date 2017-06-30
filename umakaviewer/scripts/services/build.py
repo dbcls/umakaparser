@@ -221,11 +221,9 @@ def extraction_classes(graph):
 
 
 def extraction_properties(graph):
-    default_dataset = URIRef('http://www.w3.org/ns/sparql-service-description#defaultDataset')
-    subject = next(graph.objects(predicate=default_dataset))
     property_partition = URIRef('http://rdfs.org/ns/void#propertyPartition')
     properties = []
-    for node in graph.objects(subject, property_partition):
+    for node in graph.objects(predicate=property_partition):
         prop = SBMPropertyPartition(graph, node)
         if not any(prop.uri == i.uri for i in properties):
             properties.append(prop)

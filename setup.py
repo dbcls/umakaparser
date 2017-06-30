@@ -20,7 +20,7 @@ setup(
     version=version,
     url="https://github.com/dbcls/umakaviewer",
     author="DBCLS",
-    author_email="",
+    author_email="fumiya.kubota@glucose.jp",
     maintainer='fumiya-kubota',
     maintainer_email='fumiya.kubota@glucose.jp',
     description="",
