@@ -4,7 +4,7 @@ import click
 from rdflib import URIRef
 from .scripts.services.utils import get_type
 from .scripts.services import index_owl, build_sbm_model
-
+from .scripts.services.convert import convert2ttl
 
 @click.group()
 def cmd():
@@ -35,14 +35,12 @@ def build_index(owl_data_ttl, dist):
     click.echo('>>> {}'.format(output))
 
 
-"""
 @cmd.command(help='''
 build_indexに使えるファイルはturtleかn3形式のみのため、convertを行います。
 ''')
 @click.argument('owl_data_files', nargs=-1, type=click.Path(exists=True, dir_okay=False))
 def convert(owl_data_files):
     convert2ttl(owl_data_files)
-"""
 
 
 @cmd.command(help=u'''

@@ -1,4 +1,0 @@
-click==6.6
-isodate==0.5.4
-pyparsing==2.1.9
-rdflib==4.2.1
