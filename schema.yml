@@ -1,0 +1,224 @@
+type: object
+properties:
+  # ********************************************
+  # 継承醸造
+  # グラフ内の円の入れ子構造に関する情報です
+  # このデータはオントロジーのsubClassOfを使って作成しています。
+  # クラスのURIをキーとします。
+  # void:classPartition に関する情報を参照しています。
+  # ********************************************
+  inheritance_structure:
+    type: array
+    items:
+      type: object
+      properties:
+        uri:
+          type: string
+        children:
+          type: array
+          items:
+            type: object
+            properties:
+              uri:
+                type: string
+              children:
+                type: array
+
+  # ********************************************
+  # クラス
+  # クラスのURIをキーとして
+  # 値はグラフで該当するクラスを選択状態にした時に右側に表示されるクラス詳細情報として表示されます。
+  # また、グラフ内の円のサイズの情報を持っています。
+  # void:classPartition に関する情報を参照しています。
+  # ********************************************
+  classes:
+    type: object
+    properties:
+      owl:Class:
+        type: object
+        properties:
+          label:
+            # そのクラスの表示名です。
+            # 言語タグをキーとしたオブジェクトです。
+            # これはbuild_indexで生成したassetの情報を参照します。
+            # ない場合はURIを表示します。
+            type: object
+            properties:
+              en:
+                type: string
+              ja:
+                type: string
+          entities:
+            # そのクラスのエンティティの数です。
+            # そのグラフ上で表示される円のサイズに関係し、この値が大きいほど大きくなります。
+            # void:entities に対応します。
+            type: number
+            examples:
+              - 4158713
+          subClassOf:
+            # 親クラスのURIです。
+            # これはbuild_indexでオントロジーから情報を収集しています。
+            # 多重継承の場合があるのでarrayとなっています。
+            type: array
+            items:
+              type: string
+          rhs:
+            # right hand sideでこのクラスの右側に来るもの、すなわち
+            # 「このクラスを主語とするトリプル」で表示している情報です。
+            # 一つ目が述語で、二つ目が目的語です。
+            # void:propertyPartitionのsbm:classRelationの情報を使用しています。
+            # 例:
+            # [
+            #   [
+            #     "rdfs:subClassOf",
+            #     "owl:Class"
+            #   ]
+            # ]
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+          lhs:
+            # left hand sideでこのクラスの左側にくるもの、すなわち
+            # 「このクラスを述語とするトリプル」で表示している情報です。
+            # 一つ目が主語で、二つ目が述語です。
+            # void:propertyPartitionのsbm:classRelationの情報を使用しています。
+            # 例:
+            # [
+            #   [
+            #     ":EachPair",
+            #     "rdf:type"
+            #   ],
+            #   [
+            #     ":LongForm",
+            #     "rdf:type"
+            #   ],
+            # ]
+            type: array
+            items:
+              type: array
+              items:
+                type: string
+  # ********************************************
+  # プロパティ
+  # 主に左ペインのリストに使用しています。
+  # void:propertyPartition に関する情報を参照しています。
+  # ********************************************
+  properties:
+    type: array
+    items:
+      type: object
+      properties:
+        uri:
+          # プロパティのURIです。
+          type: string
+          examples:
+            - :hasMemberOf
+            - rdf:type
+        triples:
+          # このプロパティが含まれているトリプルの数です。
+          # この数が多い順で並べています。
+          type: number
+        class_relations:
+          # 左ペインでプロパティをクリックした時に展開される情報です。
+          # プロパティが含まれているトリプルの詳細です。
+          # sbm:classRelation の情報を参照しています。
+          type: array
+          items:
+            type: object
+            properties:
+              subject_class:
+                # 主語になるクラスです。
+                # sbm:subjectClass に対応しています。
+                type: string
+                examples:
+                  - :PubMedID
+              object_class:
+                # 述語になるクラスです。
+                # sbm:objectClass に対応しています。
+                # この値はobject_datatypeがnullでない場合はnullになります。
+                type: string
+                examples:
+                  - owl:Class
+              object_datatype:
+                # 述語になるデータタイプです。
+                # sbm:objectDatatype に対応しています。
+                # この値はobject_classがnullでない場合はnullになります。
+                type: string
+                examples:
+                  - xsd:string
+              triples:
+                # この主語のクラス、述語のクラス、目的語のクラスのトリプルの数です。
+                # void:triples に対応しています。
+                type: number
+                examples:
+                  - 3109687
+
+  # ********************************************
+  # PREFIX
+  # パーサースクリプトで表示名短縮のために使用しているPREFIX群です。
+  # ここの値はグラフの描画には使用しません。
+  # パーサではいくつか基本的なPREFIXに加えて、(xml, rdf, rdfs, xsd, owsなど)
+  # オントロジーファイル内で定義されているものを使用しています。
+  # 例:
+  #   {
+  #   "xml": "http://www.w3.org/XML/1998/namespace",
+  #   "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+  #   "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+  #   "xsd": "http://www.w3.org/2001/XMLSchema#",
+  #   "owl": "http://www.w3.org/2002/07/owl#",
+  #   "skos": "http://www.w3.org/2004/02/skos/core#",
+  #   "doap": "http://usefulinc.com/ns/doap#",
+  #   "foaf": "http://xmlns.com/foaf/0.1/",
+  #   "dc": "http://purl.org/dc/elements/1.1/",
+  #   "dcterms": "http://purl.org/dc/terms/",
+  #   "void": "http://rdfs.org/ns/void#",
+  #   "": "http://purl.org/allie/ontology/201108#",
+  #   "mesh": "http://www.nlm.nih.gov/mesh/2011#",
+  #   "owl2xml": "http://www.w3.org/2006/12/owl2-xml#",
+  #   "terms": "http://purl.org/dc/terms/",
+  #   "sd": "http://www.w3.org/ns/sparql-service-description#",
+  #   "sbm": "http://sparqlbuilder.org/2015/09/rdf-metadata-schema#"
+  # }
+  # ********************************************
+  prefixes:
+    type: object
+
+  # ********************************************
+  # メタデータ
+  # SPARQLエンドポイントの集計情報です。表示以外には使用しません。
+  # ********************************************
+  meta_data:
+    type: object
+    properties:
+      endpoint:
+        # SPARQLエンドポイントのURLです。
+        # sd:endpoint に対応します。
+        type: string
+        examples:
+          - http://data.allie.dbcls.jp/sparql
+      crawl_date:
+        # クロールした日付です。
+        # sbm:crawlStartTime に対応します。
+        type: string
+        examples:
+          - 2016/11/15 22:01:49
+      triples:
+        # エンドポイントに格納されている総トリプル数です。
+        # void:triples に対応します。
+        type: number
+        examples:
+          - 150184110
+      classes:
+        # エンドポイントに存在するクラスの種類の数です。
+        # void:classes に対応します。
+        type: number
+        examples:
+          - 19
+      properties:
+        # エンドポイントに存在する述語の種類の数です。
+        # void:properties に対応します。
+        type: number
+        examples:
+          - 33
