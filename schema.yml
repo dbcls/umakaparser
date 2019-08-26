@@ -2,7 +2,7 @@ type: object
 properties:
   # ********************************************
   # 継承醸造
-  # グラフ内の円の入れ子構造に関する情報です
+  # グラフ内の円の入れ子構造に関する情報です。
   # このデータはオントロジーのsubClassOfを使って作成しています。
   # クラスのURIをキーとします。
   # void:classPartition に関する情報を参照しています。
@@ -13,8 +13,12 @@ properties:
       type: object
       properties:
         uri:
+          # クラスのURIです。グラフ内の円の識別子となります。
+          # グラフの円をクリックすると、このURIに対応するクラスの詳細情報を表示します。
           type: string
         children:
+          # このクラスの子クラスです。
+          # オントロジーのsubClassOfを使って入れ子構造を作っています。
           type: array
           items:
             type: object
