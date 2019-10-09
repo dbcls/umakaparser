@@ -18,5 +18,5 @@ def get_type(file_path):
     _, ext = os.path.splitext(file_path)
     if ext == '.ttl':
         return 'turtle'
-    elif ext == ('.n3', '.nt'):
+    elif ext in ('.n3', '.nt'):
         return 'n3'
