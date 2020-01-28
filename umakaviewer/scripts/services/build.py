@@ -91,8 +91,10 @@ RDFS_PROPERTY = URIRef('http://rdfs.org/ns/void#property')
 RDFS_TRIPLES = URIRef('http://rdfs.org/ns/void#triples')
 CLASS_RELATION = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#classRelation')
 
-
 class SBMPropertyPartition(SMBResource):
+    RDFS_PROPERTY = URIRef('http://rdfs.org/ns/void#property')
+    RDFS_TRIPLES = URIRef('http://rdfs.org/ns/void#triples')
+    CLASS_RELATION = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#classRelation')
 
     def __init__(self, graph, node):
         super(SBMPropertyPartition, self).__init__(graph, node)
@@ -126,11 +128,11 @@ class SBMPropertyPartition(SMBResource):
 
         return sorted(relations, key=lambda x: x.triples, reverse=True)
 
-    def serialize(self):
+    def serialize(self, classes_detail):
         result = {
             'uri': self.uri,
             'triples': self.triples,
-            'class_relations': [relation.serialize() for relation in self.class_relations]
+            'class_relations': [relation.serialize(classes_detail) for relation in self.class_relations]
         }
         if self.label:
             result['label'] = labels_lang(self.label)
@@ -164,11 +166,15 @@ class SBMClassRelation(SMBResource):
         objects = [o for o in self._graph.objects(self._node, SUBJECT_CLASS)]
         return objects[0].n3(self._graph.namespace_manager).strip('<>') if objects else None
 
-    def serialize(self):
+    def serialize(self, classes_detail):
+        object_class = self.object_class
+        object_datatype = self.object_datatype
+        if object_class not in classes_detail:
+            object_class, object_datatype = object_datatype, object_class
         return {
             'triples': self.triples,
-            'object_class': self.object_class,
-            'object_datatype': self.object_datatype,
+            'object_class': object_class,
+            'object_datatype': object_datatype,
             'subject_class': self.subject_class
         }
 
@@ -366,11 +372,10 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         for relation in p.class_relations:
             s = relation.subject_class
             oc = relation.object_class
-
-            if oc:
+            if s in classes_map:
                 classes_map[s].rhs.add((p.uri, oc))
+            if oc in classes_map:
                 classes_map[oc].lhs.add((s, p.uri))
-
     classes_detail = class_reference(graph, classes, structure, classes_map, sub_class_map, asset_reader)
 
     print('classes', len(classes))
@@ -385,7 +390,7 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
     result = {
         'inheritance_structure': structure,
         'classes': classes_detail,
-        'properties': [p.serialize() for p in properties],
+        'properties': [p.serialize(classes_detail) for p in properties],
         'prefixes': {p: n for p, n in graph.namespace_manager.namespaces()},
         'meta_data': meta_data
     }
