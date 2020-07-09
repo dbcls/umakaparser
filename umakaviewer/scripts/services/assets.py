@@ -9,6 +9,7 @@ from time import time
 from shutil import rmtree, move
 import glob
 from itertools import chain
+from .utils import IGNORE_CLASSES
 
 
 # 複数のturtleファイルを5万tripleを1つのチャンクとして
@@ -72,6 +73,7 @@ def output_process(args):
     output_fp = {}
     for s, p, o in graph:
         exclude_if = any([
+            o in IGNORE_CLASSES,
             isinstance(o, BNode),
             list(graph.objects(o, URIRef('http://www.w3.org/2002/07/owl#onProperty')))
         ])
