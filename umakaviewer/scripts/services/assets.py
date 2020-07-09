@@ -71,11 +71,12 @@ def output_process(args):
         graph.parse(format='turtle', data=prefix + fp.read())
     output_fp = {}
     for s, p, o in graph:
-        exclude_if = all([
+        exclude_if = any([
             isinstance(o, BNode),
             list(graph.objects(o, URIRef('http://www.w3.org/2002/07/owl#onProperty')))
         ])
         if p in output_properties and not exclude_if:
+            print(p, o, type(o))
             output = output_properties[p]
             if not output in output_fp:
                 _, file_path = tempfile.mkstemp(dir=os.path.join(base_dir, output))
