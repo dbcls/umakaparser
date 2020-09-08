@@ -112,21 +112,18 @@ class SBMPropertyPartition(SMBResource):
 
     @property
     def class_relations(self):
-        relations = []
+        support_map = {}
         for node in self._graph.objects(self._node, CLASS_RELATION):
             relation = SBMClassRelation(self._graph, node)
-            for i in relations[:]:
-                if relation.triples == i.triples and relation.subject_class == i.subject_class:
-                    if None not in [i.object_class, relation.object_datatype] and \
-                       i.object_class == relation.object_datatype:
-                        relations.remove(i)
-                    elif None not in [i.object_datatype, relation.object_class] and \
-                         i.object_datatype == relation.object_class:
-                        break
+            same_relation = support_map.get((relation.triples, relation.subject_class))
+            if same_relation:
+                if None not in [same_relation.object_datatype, relation.object_class] and same_relation.object_datatype == relation.object_class:
+                    print(same_relation, relation)
+                    print('continue')
+                    continue
             else:
-                relations.append(relation)
-
-        return sorted(relations, key=lambda x: x.triples, reverse=True)
+                support_map[(relation.triples, relation.subject_class)] = relation
+        return sorted(support_map.values(), key=lambda x: x.triples, reverse=True)
 
     def serialize(self, classes_detail):
         result = {
@@ -367,7 +364,6 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         sub_class_map[s].append(o)
     structure, classes_map = inheritance_structure(graph, classes, sub_class_map, asset_reader)
     properties = extraction_properties(graph)
-
     for p in properties:
         for relation in p.class_relations:
             s = relation.subject_class
