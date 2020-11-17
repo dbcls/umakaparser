@@ -10,11 +10,16 @@ from shutil import rmtree, move
 import glob
 from itertools import chain
 from .utils import IGNORE_CLASSES
+import resource
+from tqdm import tqdm
 
 
 # 複数のturtleファイルを5万tripleを1つのチャンクとして
 # テンポラリファイルに分割する。
 def separate_large_owl(owl_file_paths):
+    _, hard_limit = resource.getrlimit(resource.RLIMIT_NOFILE)
+    resource.setrlimit(resource.RLIMIT_NOFILE, (8192, hard_limit))
+
     fps = [open(file_path, 'r') for file_path in owl_file_paths]
     chain_fp = chain(*fps)
     text = None
@@ -26,11 +31,11 @@ def separate_large_owl(owl_file_paths):
     temp_files = []
 
     def output(content):
-        t = tempfile.mkstemp(dir=temp_dir)
-        with open(t[1], 'w') as temp_fp:
+        _, name = tempfile.mkstemp(dir=temp_dir)
+        with open(name, 'w') as temp_fp:
             temp_fp.write(content)
-        return t
-
+        return name
+    number_of_files = 1
     for idx, row in enumerate(chain_fp):
         row = row.strip()
         if text is None:
@@ -48,14 +53,15 @@ def separate_large_owl(owl_file_paths):
         if row.endswith(' .'):
             count += 1
             if count == 50000:
-                num, name = output(text)
+                name = output(text)
                 text = None
                 temp_files.append(name)
-                print(num, idx, datetime.now() - now)
+                print(number_of_files, idx, datetime.now() - now)
+                number_of_files += 1
     else:
-        num, name = output(text)
+        name = output(text)
         temp_files.append(name)
-        print(num, idx, datetime.now() - now)
+        print(number_of_files, idx, datetime.now() - now)
 
     for fp in fps:
         fp.close()
@@ -86,7 +92,6 @@ def output_process(args):
             fp.write('{} {}\n'.format(s.n3(), o.n3()))
     for fp in output_fp.values():
         fp.close()
-    print(temp_file)
 
 
 # ディレクトリ内のファイルを全て連結する。
@@ -125,10 +130,9 @@ def index_owl(owl_file_paths, output_properties, dist):
     os.mkdir(base_dir)
     try:
         p = Pool()
-        start_time = time()
-        p.map(output_process, ((prefix, temp_file, output_properties, temp_dir) for temp_file in temp_files))
-        finish_time = time()
-        print(finish_time - start_time)
+        with tqdm(total=len(temp_files)) as pbar:
+            for _ in p.imap_unordered(output_process, ((prefix, temp_file, output_properties, temp_dir) for temp_file in temp_files)):
+                pbar.update(1)
         for op in output_properties.values():
             join_process((base_dir, temp_dir, op))
         with open(os.path.join(base_dir, 'prefix.ttl'), 'w') as fp:
