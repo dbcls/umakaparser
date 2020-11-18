@@ -8,6 +8,10 @@ from isodate import parse_datetime
 import os
 import json
 from .utils import parse_literal
+from tqdm import tqdm
+import threading
+import sys
+import time
 
 RDFS_CLASS = URIRef('http://rdfs.org/ns/void#class')
 RDFS_ENTITIES = URIRef('http://rdfs.org/ns/void#entities')
@@ -118,8 +122,6 @@ class SBMPropertyPartition(SMBResource):
             same_relation = support_map.get((relation.triples, relation.subject_class))
             if same_relation:
                 if None not in [same_relation.object_datatype, relation.object_class] and same_relation.object_datatype == relation.object_class:
-                    print(same_relation, relation)
-                    print('continue')
                     continue
             else:
                 support_map[(relation.triples, relation.subject_class)] = relation
@@ -348,23 +350,45 @@ NAME_SPACE = (
     ('void', VOID)
 )
 
+def spinner_gen():
+    while 1:
+        yield '|'
+        yield '/'
+        yield '-'
+        yield '\\'
 
 def build_sbm_model(sbm_ttl, assets_dir, dist):
     graph = Graph()
     asset_reader = AssetReader(assets_dir)
-
     for prefix, uri in NAME_SPACE:
         graph.namespace_manager.bind(prefix, uri)
     asset_reader.load_prefix(graph)
-    graph.parse(location=sbm_ttl, format='turtle')
 
+    print('グラフデータを読み込み中...(この処理には時間がかかる場合があります。)')
+    thread = threading.Thread(target=graph.parse, kwargs=dict(location=sbm_ttl, format='turtle'))
+    thread.start()
+    for spinner in spinner_gen():
+        print(spinner + '\033[1D', end='', file=sys.stdout)
+        sys.stdout.flush()
+        time.sleep(0.2)
+        if not thread.isAlive():
+            break
+    print('グラフデータを読み込みました。')
+
+    print('クラス情報を展開しています...')
     classes = extraction_classes(graph)
     sub_class_map = defaultdict(list)
     for s, o in asset_reader.read_subject_object('subClassOf', graph):
         sub_class_map[s].append(o)
     structure, classes_map = inheritance_structure(graph, classes, sub_class_map, asset_reader)
+
+
+    # thread = threading.Thread(target=property_process)
+    # thread.start()
+
+    print('プロパティ情報を展開しています...')
     properties = extraction_properties(graph)
-    for p in properties:
+    for p in tqdm(properties):
         for relation in p.class_relations:
             s = relation.subject_class
             oc = relation.object_class
@@ -373,16 +397,12 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
             if oc in classes_map:
                 classes_map[oc].lhs.add((s, p.uri))
     classes_detail = class_reference(graph, classes, structure, classes_map, sub_class_map, asset_reader)
-
-    print('classes', len(classes))
-    print('properties', len(properties))
-
     properties = sorted(properties, key=lambda x: x.triples, reverse=True)
 
+    print('メタデータを取得しています...')
     meta_data = make_meta_data(graph)
     meta_data['classes'] = len(classes)
     meta_data['properties'] = len(properties)
-
     result = {
         'inheritance_structure': structure,
         'classes': classes_detail,
@@ -390,8 +410,9 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         'prefixes': {p: n for p, n in graph.namespace_manager.namespaces()},
         'meta_data': meta_data
     }
-
+    print('データを書き込んでいます。')
     with open(dist, 'w') as fp:
         json.dump(result, fp, indent=2, ensure_ascii=False)
-
+    print('classes', len(classes))
+    print('properties', len(properties))
     return dist
