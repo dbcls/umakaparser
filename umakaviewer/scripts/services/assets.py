@@ -19,7 +19,8 @@ from tqdm import tqdm
 def separate_large_owl(owl_file_paths):
     _, hard_limit = resource.getrlimit(resource.RLIMIT_NOFILE)
     resource.setrlimit(resource.RLIMIT_NOFILE, (8192, hard_limit))
-
+    print('オントロジーファイルの分割をしています...')
+    print('ファイルNo トリプル数 経過時間')
     fps = [open(file_path, 'r') for file_path in owl_file_paths]
     chain_fp = chain(*fps)
     text = None
@@ -128,6 +129,7 @@ def index_owl(owl_file_paths, output_properties, dist):
         os.mkdir(os.path.join(temp_dir, output_property))
 
     os.mkdir(base_dir)
+    print('分割したファイルから情報を収集しています...')
     try:
         p = Pool()
         with tqdm(total=len(temp_files)) as pbar:
