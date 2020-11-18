@@ -382,10 +382,6 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         sub_class_map[s].append(o)
     structure, classes_map = inheritance_structure(graph, classes, sub_class_map, asset_reader)
 
-
-    # thread = threading.Thread(target=property_process)
-    # thread.start()
-
     print('プロパティ情報を展開しています...')
     properties = extraction_properties(graph)
     for p in tqdm(properties):
@@ -413,6 +409,6 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
     print('データを書き込んでいます。')
     with open(dist, 'w') as fp:
         json.dump(result, fp, indent=2, ensure_ascii=False)
-    print('classes', len(classes))
-    print('properties', len(properties))
+    print('クラス数', len(classes))
+    print('述語数', len(properties))
     return dist
