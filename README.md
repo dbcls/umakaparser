@@ -2,7 +2,7 @@
 This tool is to generate a file to be uploaded to [Umaka Viewer](https://umaka-viewer.dbcls.jp/).
 
 # Install
-`$ pip install umakaviewer`  
+`$ pip install umakaparser`  
 Install is completed if the help message is shown by executing the command below.  
 `$ umakaparser`  
 
