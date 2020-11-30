@@ -1,4 +1,4 @@
-from umakaviewer import __version__
+from umakaparser import __version__
 
 
 def test_version():

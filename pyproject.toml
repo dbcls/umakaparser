@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "umakaviewer"
-version = "0.0.12"
+name = "umakaparser"
+version = "0.1.0"
 description = ""
 authors = ["DBCLS"]
 license = "MIT"
-repository = "https://github.com/dbcls/umakaviewer"
+repository = "https://github.com/dbcls/umakaparser"
 homepage = "http://umaka-viewer.dbcls.jp/"
 keywords = ['dbcls', 'rdf']
 classifiers = [
@@ -30,7 +30,7 @@ tqdm = "^4.52.0"
 pytest = "^3.0"
 
 [tool.poetry.scripts]
-umakaparser = "umakaviewer.services:cmd"
+umakaparser = "umakaparser.services:cmd"
 
 
 [build-system]
