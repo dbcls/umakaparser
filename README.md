@@ -1,4 +1,4 @@
-# umakaviewer
+# umakaparser
 This tool is to generate a file to be uploaded to [Umaka Viewer](https://umaka-viewer.dbcls.jp/).
 
 # Install
