@@ -23,7 +23,7 @@ python = "^2.7 || >=3.4"
 click = "^7.0"
 isodate = "^0.6.0"
 pyparsing = "^2.4"
-rdflib = "^4.2"
+rdflib = "^5.0"
 tqdm = "^4.52.0"
 
 [tool.poetry.dev-dependencies]
