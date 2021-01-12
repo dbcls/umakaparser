@@ -3,7 +3,7 @@
 from collections import defaultdict
 from rdflib import URIRef
 from rdflib.graph import Graph
-from rdflib.namespace import XMLNS, OWL, SKOS, DOAP, FOAF, DC, DCTERMS, VOID, split_uri
+from rdflib.namespace import OWL, SKOS, DOAP, FOAF, DC, DCTERMS, VOID
 from isodate import parse_datetime
 import os
 import json
@@ -94,6 +94,7 @@ class SBMClassPartition(SMBResource):
 RDFS_PROPERTY = URIRef('http://rdfs.org/ns/void#property')
 RDFS_TRIPLES = URIRef('http://rdfs.org/ns/void#triples')
 CLASS_RELATION = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#classRelation')
+
 
 class SBMPropertyPartition(SMBResource):
     RDFS_PROPERTY = URIRef('http://rdfs.org/ns/void#property')
@@ -340,6 +341,7 @@ def property_complete(properties, assets_dir):
         if s in properties_map:
             properties_map[s].label.append(parse_literal(o))
 
+
 NAME_SPACE = (
     ('owl', OWL),
     ('skos', SKOS),
@@ -350,12 +352,14 @@ NAME_SPACE = (
     ('void', VOID)
 )
 
+
 def spinner_gen():
     while 1:
         yield '|'
         yield '/'
         yield '-'
         yield '\\'
+
 
 def build_sbm_model(sbm_ttl, assets_dir, dist):
     graph = Graph()

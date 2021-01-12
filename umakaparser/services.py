@@ -6,6 +6,7 @@ from .scripts.services.utils import get_type
 from .scripts.services import index_owl, build_sbm_model
 from .scripts.services.convert import convert2ttl
 
+
 @click.group()
 def cmd():
     pass

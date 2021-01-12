@@ -5,7 +5,6 @@ from datetime import datetime
 import tempfile
 import os
 from multiprocessing.pool import Pool
-from time import time
 from shutil import rmtree, move
 import glob
 from itertools import chain
@@ -86,7 +85,7 @@ def output_process(args):
         ])
         if p in output_properties and not exclude_if:
             output = output_properties[p]
-            if not output in output_fp:
+            if output not in output_fp:
                 _, file_path = tempfile.mkstemp(dir=os.path.join(base_dir, output))
                 output_fp[output] = open(file_path, 'w')
             fp = output_fp[output]
