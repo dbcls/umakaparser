@@ -3,7 +3,10 @@
     "cmd_help": "\nオントロジーのファイルから、モデルデータ作成のためのassetsを作成します。\n",
     "opt_help_d": "出力先のディレクトリパス",
     "error_not_specified": "オントロジーファイルを一つ以上指定してください。",
-    "error_invalid_type": "オントロジーファイルはttlかn3のみ有効です。"
+    "error_invalid_type": "オントロジーファイルはttlかn3のみ有効です。",
+    "info_separating_owl": "オントロジーファイルの分割をしています...",
+    "info_owl_items": "ファイルNo トリプル数 経過時間",
+    "info_collecting_info": "分割したファイルから情報を収集しています..."
   },
   "convert": {
     "cmd_help": "\nbuild_indexに使えるファイルはturtleかn3形式のみのため、convertを行います。\n"
