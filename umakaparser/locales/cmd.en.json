@@ -1,5 +1,16 @@
 {
-  "build_index__cmd_help": "\nCreate assets for model data creation from ontology file.\n",
-  "build_index__opt_help_d": "Output directory path",
-  "build_index__error_not_specified": "Specify one or more ontology files."
+  "build_index": {
+    "cmd_help": "\nCreate assets for model data creation from ontology file.\n",
+    "opt_help_d": "Output directory path",
+    "error_not_specified": "Specify one or more ontology files.",
+    "error_invalid_type": "Only ttl or n3 ontology files are valid."
+  },
+  "convert": {
+    "cmd_help": "\nConvert to turtle or n3 that can be used for build_index.\n"
+  },
+  "build": {
+    "cmd_help": "\nCreate model data from metadata that follows the SBM.\n",
+    "opt_help_a": "The directory output by the build_index command",
+    "opt_help_d": "Output directory path"
+  }
 }
