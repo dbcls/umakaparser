@@ -5,6 +5,19 @@ from rdflib import URIRef
 from .scripts.services.utils import get_type
 from .scripts.services import index_owl, build_sbm_model
 from .scripts.services.convert import convert2ttl
+import i18n
+from os import getenv
+
+
+def init_i18n():
+    i18n.load_path.append('./locales')
+    i18n.set('file_format', 'json')
+    i18n.set('locale', getenv('LANG').split('_')[0])
+    i18n.set('fallback', 'en')
+    i18n.set('skip_locale_root_data', True)
+
+
+init_i18n()
 
 
 @click.group()

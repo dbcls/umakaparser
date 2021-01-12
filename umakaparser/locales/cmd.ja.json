@@ -1,0 +1,5 @@
+{
+  "build_index__cmd_help": "\nオントロジーのファイルから、モデルデータ作成のためのassetsを作成します。\n",
+  "build_index__opt_help_d": "出力先のディレクトリパス",
+  "build_index__error_not_specified": "オントロジーファイルを一つ以上指定してください。"
+}
