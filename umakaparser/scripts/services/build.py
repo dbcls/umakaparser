@@ -12,6 +12,7 @@ from tqdm import tqdm
 import threading
 import sys
 import time
+import i18n
 
 RDFS_CLASS = URIRef('http://rdfs.org/ns/void#class')
 RDFS_ENTITIES = URIRef('http://rdfs.org/ns/void#entities')
@@ -368,7 +369,7 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         graph.namespace_manager.bind(prefix, uri)
     asset_reader.load_prefix(graph)
 
-    print('グラフデータを読み込み中...(この処理には時間がかかる場合があります。)')
+    print(i18n.t('cmd.build.info_loading_data'))
     thread = threading.Thread(target=graph.parse, kwargs=dict(location=sbm_ttl, format='turtle'))
     thread.start()
     for spinner in spinner_gen():
@@ -377,16 +378,16 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         time.sleep(0.2)
         if not thread.isAlive():
             break
-    print('グラフデータを読み込みました。')
+    print(i18n.t('cmd.build.info_loaded_data'))
 
-    print('クラス情報を展開しています...')
+    print(i18n.t('cmd.build.info_preparing_classes'))
     classes = extraction_classes(graph)
     sub_class_map = defaultdict(list)
     for s, o in asset_reader.read_subject_object('subClassOf', graph):
         sub_class_map[s].append(o)
     structure, classes_map = inheritance_structure(graph, classes, sub_class_map, asset_reader)
 
-    print('プロパティ情報を展開しています...')
+    print(i18n.t('cmd.build.info_preparing_properties'))
     properties = extraction_properties(graph)
     for p in tqdm(properties):
         for relation in p.class_relations:
@@ -399,7 +400,7 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
     classes_detail = class_reference(graph, classes, structure, classes_map, sub_class_map, asset_reader)
     properties = sorted(properties, key=lambda x: x.triples, reverse=True)
 
-    print('メタデータを取得しています...')
+    print(i18n.t('cmd.build.info_getting_metadata'))
     meta_data = make_meta_data(graph)
     meta_data['classes'] = len(classes)
     meta_data['properties'] = len(properties)
@@ -410,9 +411,9 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         'prefixes': {p: n for p, n in graph.namespace_manager.namespaces()},
         'meta_data': meta_data
     }
-    print('データを書き込んでいます。')
+    print(i18n.t('cmd.build.info_writing_data'))
     with open(dist, 'w') as fp:
         json.dump(result, fp, indent=2, ensure_ascii=False)
-    print('クラス数', len(classes))
-    print('述語数', len(properties))
+    print(i18n.t('cmd.build.info_number_of_classes'), len(classes))
+    print(i18n.t('cmd.build.info_number_of_properties'), len(properties))
     return dist

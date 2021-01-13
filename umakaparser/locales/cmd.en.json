@@ -14,6 +14,14 @@
   "build": {
     "cmd_help": "\nCreate model data from metadata that follows the SBM.\n",
     "opt_help_a": "The directory output by the build_index command",
-    "opt_help_d": "Output directory path"
+    "opt_help_d": "Output directory path",
+    "info_loading_data": "Loading graph data... (This process may take some time.)",
+    "info_loaded_data": "Loaded graph data.",
+    "info_preparing_classes": "Preparing class information...",
+    "info_preparing_properties": "Preparing property information...",
+    "info_getting_metadata": "Getting metadata...",
+    "info_writing_data": "Writing data...",
+    "info_number_of_classes": "number of classes",
+    "info_number_of_properties": "number of properties"
   }
 }
