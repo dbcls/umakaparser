@@ -373,7 +373,7 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
     thread = threading.Thread(target=graph.parse, kwargs=dict(location=sbm_ttl, format='turtle'))
     thread.start()
     for spinner in spinner_gen():
-        print(spinner + '\033[1D', end='', file=sys.stdout)
+        sys.stdout.write(spinner + '\033[1D')
         sys.stdout.flush()
         time.sleep(0.2)
         if not thread.isAlive():

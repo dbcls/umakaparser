@@ -18,7 +18,7 @@ IGNORE_CLASSES = set([
 
 
 def parse_literal(literal):
-    return Literal(*[l if l else None for l in r_literal.match(literal).groups()])
+    return Literal(*[v if v else None for v in r_literal.match(literal).groups()])
 
 
 def get_type(file_path):
