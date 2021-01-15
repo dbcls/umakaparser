@@ -22,6 +22,7 @@
     "info_getting_metadata": "Getting metadata...",
     "info_writing_data": "Writing data...",
     "info_number_of_classes": "number of classes",
-    "info_number_of_properties": "number of properties"
+    "info_number_of_properties": "number of properties",
+    "error_validation_required": "%{item} required for %{cause} does not exist."
   }
 }

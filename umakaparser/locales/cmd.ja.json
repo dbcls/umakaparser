@@ -13,7 +13,7 @@
   },
   "build": {
     "cmd_help": "\nSBMに従うメタデータからモデルデータを作成します。\n",
-    "opt_help_a": "build_indexコマンドで出力されたディレクトリ",
+    "opt_help_a": "build_indexコマンドで出力されたディレクトリパス",
     "opt_help_d": "出力先のディレクトリパス",
     "info_loading_data": "グラフデータを読み込み中...(この処理には時間がかかる場合があります。)",
     "info_loaded_data": "グラフデータを読み込みました。",
@@ -22,6 +22,7 @@
     "info_getting_metadata": "メタデータを取得しています...",
     "info_writing_data": "データを書き込んでいます...",
     "info_number_of_classes": "クラス数",
-    "info_number_of_properties": "述語数"
+    "info_number_of_properties": "述語数",
+    "error_validation_required": "%{cause}に必須の%{item}が存在しません。"
   }
 }

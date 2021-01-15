@@ -13,6 +13,7 @@ import threading
 import sys
 import time
 import i18n
+from .validate import validate_graph
 
 RDFS_CLASS = URIRef('http://rdfs.org/ns/void#class')
 RDFS_ENTITIES = URIRef('http://rdfs.org/ns/void#entities')
@@ -378,6 +379,8 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         time.sleep(0.2)
         if not thread.isAlive():
             break
+
+    validate_graph(graph)
     print(i18n.t('cmd.build.info_loaded_data'))
 
     print(i18n.t('cmd.build.info_preparing_classes'))
