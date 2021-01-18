@@ -7,15 +7,27 @@ from click import UsageError
 import six
 
 
+def create_triple(s=None, p=None, o=None):
+    return {'subject': s, 'predicate': p, 'object': o}
+
+
+def error_message(cause, triple):
+    item = str(triple['predicate']).split('#')[1]
+    message = i18n.t('cmd.build.error_validation_required', cause=cause, item=item)
+    info = []
+    if triple['subject'] is not None:
+        info.append('subject = {}'.format(triple['subject']))
+    if triple['predicate'] is not None:
+        info.append('predicate = {}'.format(triple['predicate']))
+    if triple['object'] is not None:
+        info.append('object = {}'.format(triple['object']))
+
+    return message + ' ' + '({})'.format(', '.join(info))
+
+
 def validate_meta_data(graph):
 
-    errors = []
-
-    def error_message(predicate=None):
-        item = str(predicate).split('#')[1]
-        message = i18n.t('cmd.build.error_validation_required', cause='metadata', item=item)
-        info = '(predicate = {})'.format(predicate)
-        return message + info
+    error_triples = []
 
     def graph_objects(predicate=None, subject=None):
         return [o for o in graph.objects(subject, predicate)]
@@ -23,40 +35,34 @@ def validate_meta_data(graph):
     endpoint_predicate = URIRef('http://www.w3.org/ns/sparql-service-description#endpoint')
     endpoints = graph_objects(endpoint_predicate)
     if len(endpoints) == 0:
-        errors.append(error_message(endpoint_predicate))
+        error_triples.append(create_triple(p=endpoint_predicate))
 
     clawl_log_predicate = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#crawlLog')
     clawl_logs = graph_objects(clawl_log_predicate)
     if len(clawl_logs) == 0:
-        errors.append(error_message(clawl_log_predicate))
+        error_triples.append(create_triple(p=clawl_log_predicate))
     else:
         clawl_start_time_predicate = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#crawlStartTime')
         clawl_start_times = sum([graph_objects(clawl_start_time_predicate, o) for o in clawl_logs], [])
         if len(clawl_start_times) == 0:
-            errors.append(error_message(clawl_start_time_predicate))
+            error_triples.append(create_triple(p=clawl_start_time_predicate))
 
     default_dataset_predicate = URIRef('http://www.w3.org/ns/sparql-service-description#defaultDataset')
     default_datasets = graph_objects(default_dataset_predicate)
     if len(default_datasets) == 0:
-        errors.append(error_message(default_dataset_predicate))
+        error_triples.append(create_triple(p=default_dataset_predicate))
     else:
         triples_predicate = URIRef('http://rdfs.org/ns/void#triples')
         triples = sum([graph_objects(triples_predicate, o) for o in default_datasets], [])
         if len(triples) == 0:
-            errors.append(error_message(triples_predicate))
+            error_triples.append(create_triple(p=triples_predicate))
 
-    return errors
+    return error_triples
 
 
 def validate_class_partition(graph):
 
-    errors = []
-
-    def error_message(subject=None, predicate=None):
-        item = str(predicate).split('#')[1]
-        message = i18n.t('cmd.build.error_validation_required', cause='ClassPartition', item=item)
-        info = '(subject = {}, predicate = {})'.format(subject, predicate)
-        return message + ' ' + info
+    error_triples = []
 
     class_partition = URIRef('http://rdfs.org/ns/void#classPartition')
     class_subjects = [o for o in graph.objects(predicate=class_partition)]
@@ -68,21 +74,15 @@ def validate_class_partition(graph):
     ]
 
     for subject, predicates in zip(class_subjects, class_predicates):
-        missing_predicates = [rp for rp in required_predicates if rp not in predicates]
-        errors.extend([error_message(subject, mp) for mp in missing_predicates])
+        missing_triples = [create_triple(s=subject, p=rp) for rp in required_predicates if rp not in predicates]
+        error_triples.extend(missing_triples)
 
-    return errors
+    return error_triples
 
 
 def validate_property_partition(graph):
 
-    errors = []
-
-    def error_message(subject=None, predicate=None):
-        item = str(predicate).split('#')[1]
-        message = i18n.t('cmd.build.error_validation_required', cause='PropertyPartition', item=item)
-        info = '(subject = {}, predicate = {})'.format(subject, predicate)
-        return message + ' ' + info
+    error_triples = []
 
     property_partition = URIRef('http://rdfs.org/ns/void#propertyPartition')
     property_subjects = [o for o in graph.objects(predicate=property_partition)]
@@ -93,24 +93,25 @@ def validate_property_partition(graph):
     ]
 
     for subject, predicates in zip(property_subjects, property_predicates):
-        missing_predicates = [rp for rp in required_predicates if rp not in predicates]
-        errors.extend([error_message(subject, mp) for mp in missing_predicates])
+        missing_triples = [create_triple(s=subject, p=rp) for rp in required_predicates if rp not in predicates]
+        error_triples.extend(missing_triples)
 
-    return errors
+    return error_triples
 
 
 def validate_graph(graph):
 
     errors = []
-    errors.extend(validate_meta_data(graph))
+    errors.extend([error_message('metadata', t) for t in validate_meta_data(graph)])
 
     if 0 < len(errors):
         message = 'Validation failed.\n' + '\n'.join(['Cause: ' + e for e in errors])
         raise UsageError(message)
 
     warns = []
-    warns.extend(validate_class_partition(graph))
-    warns.extend(validate_property_partition(graph))
+    warns.extend([error_message('ClassPartition', t) for t in validate_class_partition(graph)])
+    warns.extend([error_message('PropertyPartition', t) for t in validate_property_partition(graph)])
 
-    message = '\n'.join(['Warn: ' + w for w in warns])
-    print(message.encode('utf-8') if six.PY2 else message)
+    if 0 < len(warns):
+        message = '\n'.join(['Warn: ' + w for w in warns])
+        print(message.encode('utf-8') if six.PY2 else message)
