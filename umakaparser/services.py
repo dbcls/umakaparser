@@ -6,15 +6,16 @@ from .scripts.services.utils import get_type, i18n_t
 from .scripts.services import index_owl, build_sbm_model
 from .scripts.services.convert import convert2ttl
 import i18n
-from os import getenv
-from os.path import abspath, dirname
+from os import getenv, path
 
 
 def init_i18n():
-    pwd = dirname(abspath(__file__))
-    i18n.load_path.append(pwd + '/locales')
+    FILE_DIR = path.dirname(path.abspath(__file__))
+    LOCALE_DIR = path.join(FILE_DIR, 'locales')
+    i18n.load_path.append(LOCALE_DIR)
     i18n.set('file_format', 'json')
-    i18n.set('locale', getenv('LANG').split('_')[0])
+    LOCALE = getenv('LANG').split('.')[0]
+    i18n.set('locale', LOCALE.split('_')[0])
     i18n.set('fallback', 'en')
     i18n.set('skip_locale_root_data', True)
 
@@ -29,7 +30,8 @@ def cmd():
 
 @cmd.command(help=i18n_t('cmd.build_index.cmd_help'))
 @click.argument('owl_data_ttl', nargs=-1, type=click.Path(exists=True, dir_okay=False))
-@click.option('--dist', '-d', default='assets', type=click.Path(exists=False), help=i18n_t('cmd.build_index.opt_help_d'))
+@click.option('--dist', '-d',
+              default='assets', type=click.Path(exists=False), help=i18n_t('cmd.build_index.opt_help_d'))
 def build_index(owl_data_ttl, dist):
     if not owl_data_ttl:
         raise click.UsageError(i18n_t('cmd.build_index.error_not_specified'))
