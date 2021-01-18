@@ -8,10 +8,9 @@ from multiprocessing.pool import Pool
 from shutil import rmtree, move
 import glob
 from itertools import chain
-from .utils import IGNORE_CLASSES
+from .utils import IGNORE_CLASSES, i18n_t
 import resource
 from tqdm import tqdm
-import i18n
 
 
 # 複数のturtleファイルを5万tripleを1つのチャンクとして
@@ -19,8 +18,8 @@ import i18n
 def separate_large_owl(owl_file_paths):
     _, hard_limit = resource.getrlimit(resource.RLIMIT_NOFILE)
     resource.setrlimit(resource.RLIMIT_NOFILE, (8192, hard_limit))
-    print(i18n.t('cmd.build_index.info_separating_owl'))
-    print(i18n.t('cmd.build_index.info_owl_items'))
+    print(i18n_t('cmd.build_index.info_separating_owl'))
+    print(i18n_t('cmd.build_index.info_owl_items'))
     fps = [open(file_path, 'r') for file_path in owl_file_paths]
     chain_fp = chain(*fps)
     text = None
@@ -129,7 +128,7 @@ def index_owl(owl_file_paths, output_properties, dist):
         os.mkdir(os.path.join(temp_dir, output_property))
 
     os.mkdir(base_dir)
-    print(i18n.t('cmd.build_index.info_collecting_info'))
+    print(i18n_t('cmd.build_index.info_collecting_info'))
     try:
         p = Pool()
         with tqdm(total=len(temp_files)) as pbar:

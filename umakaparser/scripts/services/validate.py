@@ -1,6 +1,10 @@
+# coding:utf-8
+
+
 from rdflib import URIRef
 import i18n
 from click import UsageError
+import six
 
 
 def validate_meta_data(graph):
@@ -79,7 +83,7 @@ def validate_property_partition(graph):
     def error_message(predicate=None):
         item = str(predicate).split('#')[1]
         message = i18n.t('cmd.build.error_validation_required', cause='PropertyPartition', item=item)
-        info = '(predicate = {})'.format(predicate)
+        info = u'(predicate = {})'.format(predicate)
         return message + ' ' + info
 
     property_partition = URIRef('http://rdfs.org/ns/void#propertyPartition')
@@ -105,11 +109,12 @@ def validate_graph(graph):
     errors.extend(validate_meta_data(graph))
 
     if 0 < len(errors):
-        raise UsageError('Validation failed.\n' + '\n'.join(['Cause: ' + e for e in errors]))
+        message = 'Validation failed.\n' + '\n'.join(['Cause: ' + e for e in errors])
+        raise UsageError(message)
 
     warns = []
     warns.extend(validate_class_partition(graph))
     warns.extend(validate_property_partition(graph))
 
-    for w in warns:
-        print('Warn: ' + w)
+    message = '\n'.join(['Warn: ' + w for w in warns])
+    print(message.encode('utf-8') if six.PY2 else message)

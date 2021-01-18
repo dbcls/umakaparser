@@ -2,7 +2,7 @@
 
 import click
 from rdflib import URIRef
-from .scripts.services.utils import get_type
+from .scripts.services.utils import get_type, i18n_t
 from .scripts.services import index_owl, build_sbm_model
 from .scripts.services.convert import convert2ttl
 import i18n
@@ -27,16 +27,16 @@ def cmd():
     pass
 
 
-@cmd.command(help=i18n.t('cmd.build_index.cmd_help'))
+@cmd.command(help=i18n_t('cmd.build_index.cmd_help'))
 @click.argument('owl_data_ttl', nargs=-1, type=click.Path(exists=True, dir_okay=False))
-@click.option('--dist', '-d', default='assets', type=click.Path(exists=False), help=i18n.t('cmd.build_index.opt_help_d'))
+@click.option('--dist', '-d', default='assets', type=click.Path(exists=False), help=i18n_t('cmd.build_index.opt_help_d'))
 def build_index(owl_data_ttl, dist):
     if not owl_data_ttl:
-        raise click.UsageError(i18n.t('cmd.build_index.error_not_specified'))
+        raise click.UsageError(i18n_t('cmd.build_index.error_not_specified'))
 
     for owl_data in owl_data_ttl:
         if get_type(owl_data) not in ('turtle', 'n3'):
-            raise click.UsageError(i18n.t('cmd.build_index.error_invalid_type'))
+            raise click.UsageError(i18n_t('cmd.build_index.error_invalid_type'))
 
     target_properties = {
         URIRef('http://www.w3.org/2002/07/owl#sameAs'): 'sameAs',
@@ -49,16 +49,16 @@ def build_index(owl_data_ttl, dist):
     click.echo('>>> {}'.format(output))
 
 
-@cmd.command(help=i18n.t('cmd.convert.cmd_help'))
+@cmd.command(help=i18n_t('cmd.convert.cmd_help'))
 @click.argument('owl_data_files', nargs=-1, type=click.Path(exists=True, dir_okay=False))
 def convert(owl_data_files):
     convert2ttl(owl_data_files)
 
 
-@cmd.command(help=i18n.t('cmd.build.cmd_help'))
+@cmd.command(help=i18n_t('cmd.build.cmd_help'))
 @click.argument('sbm_data_ttl', nargs=1, type=click.Path(exists=True))
-@click.option('--assets', '-a', type=click.Path(exists=True), help=i18n.t('cmd.build.opt_help_a'))
-@click.option('--dist', '-d', default='model.json', type=click.Path(exists=False), help=i18n.t('cmd.build.opt_help_d'))
+@click.option('--assets', '-a', type=click.Path(exists=True), help=i18n_t('cmd.build.opt_help_a'))
+@click.option('--dist', '-d', default='model.json', type=click.Path(exists=False), help=i18n_t('cmd.build.opt_help_d'))
 def build(sbm_data_ttl, assets=None, dist=None):
     build_sbm_model(sbm_data_ttl, assets, dist)
     click.echo('>>> {}'.format(dist))

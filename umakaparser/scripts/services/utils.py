@@ -4,6 +4,8 @@ from rdflib.plugins.parsers.ntriples import r_literal
 from rdflib import Literal, URIRef
 from mimetypes import guess_type
 import os
+import i18n
+import six
 
 
 IGNORE_CLASSES = set([
@@ -31,3 +33,7 @@ def get_type(file_path):
         return 'turtle'
     elif ext in ('.n3', '.nt'):
         return 'n3'
+
+
+def i18n_t(key, **kwargs):
+    return i18n.t(key, **kwargs).encode('utf-8') if six.PY2 else i18n.t(key, **kwargs)
