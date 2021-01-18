@@ -6,6 +6,8 @@ from mimetypes import guess_type
 import os
 import i18n
 import six
+from functools import wraps
+import datetime
 
 
 IGNORE_CLASSES = set([
@@ -37,3 +39,15 @@ def get_type(file_path):
 
 def i18n_t(key, **kwargs):
     return i18n.t(key, **kwargs).encode('utf-8') if six.PY2 else i18n.t(key, **kwargs)
+
+
+def timer(fn):
+    @wraps(fn)
+    def wrapper(*args, **kargs):
+        start = datetime.datetime.now()
+        result = fn(*args, **kargs)
+        end = datetime.datetime.now()
+        elapsed = end.timestamp() - start.timestamp()
+        print('Debug: name -> {}, start -> {}, end -> {}, elapsed -> {} s'.format(fn.__name__, start, end, elapsed))
+        return result
+    return wrapper

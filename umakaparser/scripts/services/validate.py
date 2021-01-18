@@ -67,11 +67,9 @@ def validate_class_partition(graph):
         URIRef('http://rdfs.org/ns/void#entities'),
     ]
 
-    for rp in required_predicates:
-        for subject, predicates in zip(class_subjects, class_predicates):
-            filterd_predicates = [p for p in predicates if p == rp]
-            if len(filterd_predicates) == 0:
-                errors.append(error_message(subject, rp))
+    for subject, predicates in zip(class_subjects, class_predicates):
+        missing_predicates = [rp for rp in required_predicates if rp not in predicates]
+        errors.extend([error_message(subject, mp) for mp in missing_predicates])
 
     return errors
 
@@ -80,10 +78,10 @@ def validate_property_partition(graph):
 
     errors = []
 
-    def error_message(predicate=None):
+    def error_message(subject=None, predicate=None):
         item = str(predicate).split('#')[1]
         message = i18n.t('cmd.build.error_validation_required', cause='PropertyPartition', item=item)
-        info = u'(predicate = {})'.format(predicate)
+        info = '(subject = {}, predicate = {})'.format(subject, predicate)
         return message + ' ' + info
 
     property_partition = URIRef('http://rdfs.org/ns/void#propertyPartition')
@@ -94,11 +92,9 @@ def validate_property_partition(graph):
         URIRef('http://rdfs.org/ns/void#triples'),
     ]
 
-    for rp in required_predicates:
-        for subject, predicates in zip(property_subjects, property_predicates):
-            filterd_predicates = [p for p in predicates if p == rp]
-            if len(filterd_predicates) == 0:
-                errors.append(error_message(subject, rp))
+    for subject, predicates in zip(property_subjects, property_predicates):
+        missing_predicates = [rp for rp in required_predicates if rp not in predicates]
+        errors.extend([error_message(subject, mp) for mp in missing_predicates])
 
     return errors
 
