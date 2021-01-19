@@ -1,0 +1,48 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sd: <http://www.w3.org/ns/sparql-service-description#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix sbm: <http://sparqlbuilder.org/2015/09/rdf-metadata-schema#> .
+
+_:node1b1k18hkax40 a sd:Service ;
+	sd:defaultDataset _:node1b1k18hkax39 .
+
+_:node1b1k18hkax39 a sd:Dataset ;
+	sbm:metadataGraphURI <http://data.allie.dbcls.jp/sparql> ;
+	void:properties "33"^^xsd:long ;
+	void:classes "19"^^xsd:long ;
+	sbm:datatypes "4"^^xsd:long ;
+	sbm:endpointCategory "2"^^xsd:long ;
+	sbm:propertyCategory "3"^^xsd:long ;
+	sbm:classCategory "2"^^xsd:long ;
+	void:propertyPartition _:node1b1k18hkax2 .
+
+_:node1b1k18hkax2 a void:Dataset ;
+	void:property <http://purl.org/allie/ontology/201108#frequency> ;
+	void:classes "0"^^xsd:long ;
+	sbm:subjectClasses "3"^^xsd:long ;
+	sbm:objectClasses "0"^^xsd:long ;
+	sbm:objectDatatypes "3"^^xsd:long ;
+	void:distinctSubjects "8468287"^^xsd:long ;
+	void:distinctObjects "4901"^^xsd:long ;
+	sbm:propertyCategory "3"^^xsd:long ;
+	sbm:classRelation _:node1b1k18hkax41 .
+
+_:node1b1k18hkax41 a sbm:ClassRelation ;
+	sbm:subjectClass <http://purl.org/allie/ontology/201108#EachPair> ;
+	void:triples "3109687"^^xsd:long ;
+	void:distinctSubjects "3109687"^^xsd:long ;
+	void:distinctObjects "2263"^^xsd:long ;
+	sbm:sample "" ;
+	sbm:objectDatatype xsd:string .
+
+_:node1b1k18hkax39 void:classPartition _:node1b1k18hkax78 .
+
+_:node1b1k18hkax78 a void:Dataset .
+
+_:node1b1k18hkax39 sbm:crawlLog _:node1b1k18hkax1 .
+
+_:node1b1k18hkax1 a sbm:CrawlLog ;
+	sbm:crawlEndTime "2016-11-15T22:01:49.071+09:00"^^xsd:dateTime ;
+	sbm:endpointAccesses "1"^^xsd:long .

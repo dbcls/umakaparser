@@ -46,8 +46,6 @@ _:node1b1k18hkax78 a void:Dataset ;
 	void:class <http://purl.org/allie/ontology/201108#ShortForm> ;
 	void:entities "743574"^^xsd:long .
 
-_:node1b1k18hkax39 sbm:crawlLog _:node1b1k18hkax1 .
-
 _:node1b1k18hkax1 a sbm:CrawlLog ;
 	sbm:crawlStartTime "2016-11-15T22:01:49.071+09:00"^^xsd:dateTime ;
 	sbm:crawlEndTime "2016-11-15T22:01:49.071+09:00"^^xsd:dateTime ;
