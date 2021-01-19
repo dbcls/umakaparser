@@ -115,3 +115,61 @@ def test_validate_metadata(runner):
     check_default_dataset()
     check_triples()
     check_errors()
+
+
+def test_validate_class_partition(runner):
+    TARGET = 'class_partition'
+    ASSETS_DIR = path.join(TESTDATA_DIR, TARGET, 'assets')
+
+    def make_path(filename):
+        testdata = path.join(TESTDATA_DIR, TARGET, '{}.ttl'.format(filename))
+        dist = path.join(TESTDATA_DIR, TARGET, 'dist', '{}.json'.format(filename))
+        return testdata, dist
+
+    def check_success():
+        TESTDATA, DIST = make_path('success')
+        result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
+        assert result.exit_code == 0
+        assert '>> ' + DIST in result.output
+        assert path.exists(DIST)
+
+    def check_class():
+        TESTDATA, DIST = make_path('warn_class')
+        result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
+        assert result.exit_code == 0
+        assert '>> ' + DIST in result.output
+        message_ja = 'Warn: ClassPartition'
+        message_en = 'Warn: class'
+        message = message_ja if LOCALE == 'ja' else message_en
+        assert message in result.output
+        assert path.exists(DIST)
+
+    def check_entities():
+        TESTDATA, DIST = make_path('warn_entities')
+        result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
+        assert result.exit_code == 0
+        assert '>> ' + DIST in result.output
+        message_ja = 'Warn: ClassPartition'
+        message_en = 'Warn: entities'
+        message = message_ja if LOCALE == 'ja' else message_en
+        assert message in result.output
+        assert path.exists(DIST)
+
+    def check_warns():
+        TESTDATA, DIST = make_path('warns')
+        result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
+        assert result.exit_code == 0
+        assert '>> ' + DIST in result.output
+        messages_ja = ['Warn: ClassPartition']
+        messages_en = ['Warn: class', 'Warn: entities']
+        messages = messages_ja if LOCALE == 'ja' else messages_en
+        for message in messages:
+            assert message in result.output
+        error_message = 'Error: '
+        assert error_message not in result.output
+        assert path.exists(DIST)
+
+    check_success()
+    check_class()
+    check_entities()
+    check_warns()
