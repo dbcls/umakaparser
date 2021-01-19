@@ -376,7 +376,7 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         sys.stdout.write(spinner + '\033[1D')
         sys.stdout.flush()
         time.sleep(0.2)
-        if not thread.isAlive():
+        if not thread.is_alive():
             break
 
     validate_graph(graph)
