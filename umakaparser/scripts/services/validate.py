@@ -37,15 +37,15 @@ def validate_meta_data(graph):
     if len(endpoints) == 0:
         error_triples.append(create_triple(p=endpoint_predicate))
 
-    clawl_log_predicate = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#crawlLog')
-    clawl_logs = graph_objects(clawl_log_predicate)
-    if len(clawl_logs) == 0:
-        error_triples.append(create_triple(p=clawl_log_predicate))
+    crawl_log_predicate = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#crawlLog')
+    crawl_logs = graph_objects(crawl_log_predicate)
+    if len(crawl_logs) == 0:
+        error_triples.append(create_triple(p=crawl_log_predicate))
     else:
-        clawl_start_time_predicate = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#crawlStartTime')
-        clawl_start_times = sum([graph_objects(clawl_start_time_predicate, o) for o in clawl_logs], [])
-        if len(clawl_start_times) == 0:
-            error_triples.append(create_triple(p=clawl_start_time_predicate))
+        crawl_start_time_predicate = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#crawlStartTime')
+        crawl_start_times = sum([graph_objects(crawl_start_time_predicate, o) for o in crawl_logs], [])
+        if len(crawl_start_times) == 0:
+            error_triples.append(create_triple(p=crawl_start_time_predicate))
 
     default_dataset_predicate = URIRef('http://www.w3.org/ns/sparql-service-description#defaultDataset')
     default_datasets = graph_objects(default_dataset_predicate)
