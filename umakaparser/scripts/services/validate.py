@@ -89,6 +89,7 @@ def validate_property_partition(graph):
     property_predicates = [[p for p in graph.predicates(s)] for s in property_subjects]
 
     required_predicates = [
+        URIRef('http://rdfs.org/ns/void#property'),
         URIRef('http://rdfs.org/ns/void#triples'),
     ]
 

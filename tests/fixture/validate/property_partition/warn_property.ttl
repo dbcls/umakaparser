@@ -21,6 +21,7 @@ _:node1b1k18hkax39 a sd:Dataset ;
 	void:propertyPartition _:node1b1k18hkax2 .
 
 _:node1b1k18hkax2 a void:Dataset ;
+	void:triples "8468287"^^xsd:long ;
 	void:classes "0"^^xsd:long ;
 	sbm:subjectClasses "3"^^xsd:long ;
 	sbm:objectClasses "0"^^xsd:long ;
@@ -41,7 +42,8 @@ _:node1b1k18hkax41 a sbm:ClassRelation ;
 _:node1b1k18hkax39 void:classPartition _:node1b1k18hkax78 .
 
 _:node1b1k18hkax78 a void:Dataset ;
-	void:class <http://purl.org/allie/ontology/201108#ShortForm> .
+	void:class <http://purl.org/allie/ontology/201108#ShortForm> ;
+	void:entities "743574"^^xsd:long .
 
 _:node1b1k18hkax39 sbm:crawlLog _:node1b1k18hkax1 .
 

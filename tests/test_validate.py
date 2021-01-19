@@ -191,6 +191,17 @@ def test_validate_property_partition(runner):
         assert '>> ' + DIST in result.output
         assert path.exists(DIST)
 
+    def check_property():
+        TESTDATA, DIST = make_path('warn_property')
+        result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
+        assert result.exit_code == 0
+        assert '>> ' + DIST in result.output
+        message_ja = 'Warn: PropertyPartition'
+        message_en = 'Warn: property'
+        message = message_ja if LOCALE == 'ja' else message_en
+        assert message in result.output
+        assert path.exists(DIST)
+
     def check_triples():
         TESTDATA, DIST = make_path('warn_triples')
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
@@ -208,7 +219,7 @@ def test_validate_property_partition(runner):
         assert result.exit_code == 0
         assert '>> ' + DIST in result.output
         messages_ja = ['Warn: PropertyPartition']
-        messages_en = ['Warn: triples']
+        messages_en = ['Warn: property', 'Warn: triples']
         messages = messages_ja if LOCALE == 'ja' else messages_en
         for message in messages:
             assert message in result.output
@@ -217,5 +228,6 @@ def test_validate_property_partition(runner):
         assert path.exists(DIST)
 
     check_success()
+    check_property()
     check_triples()
     check_warns()
