@@ -5,6 +5,7 @@ import pytest
 from click.testing import CliRunner
 from umakaparser.services import build
 from os import path, getenv
+import i18n
 
 LOCALE = getenv('LANG').split('_')[0]
 FILE_DIR = path.dirname(path.abspath(__file__))
@@ -17,7 +18,14 @@ def runner():
     return CliRunner()
 
 
-def test_validate_metadata(runner):
+@pytest.fixture
+def message():
+    def format(prefix, cause, item):
+        return prefix + ': ' + i18n.t('cmd.build.error_validation_required', cause=cause, item=item)
+    return format
+
+
+def test_validate_metadata(runner, message):
     TARGET = 'metadata'
     ASSETS_DIR = path.join(TESTDATA_DIR, TARGET, 'assets')
 
@@ -39,10 +47,7 @@ def test_validate_metadata(runner):
         assert result.exit_code == 2
         assert '>> ' + DIST not in result.output
         assert 'Error: Validation failed.' in result.output
-        message_ja = 'Cause: metadata'
-        message_en = 'Cause: endpoint'
-        message = message_ja if LOCALE == 'ja' else message_en
-        assert message in result.output
+        assert message('Cause', 'metadata', 'endpoint') in result.output
         assert not path.exists(DIST)
 
     def check_crawl_log():
@@ -51,10 +56,7 @@ def test_validate_metadata(runner):
         assert result.exit_code == 2
         assert '>> ' + DIST not in result.output
         assert 'Error: Validation failed.' in result.output
-        message_ja = 'Cause: metadata'
-        message_en = 'Cause: crawlLog'
-        message = message_ja if LOCALE == 'ja' else message_en
-        assert message in result.output
+        assert message('Cause', 'metadata', 'crawlLog') in result.output
         assert not path.exists(DIST)
 
     def check_crawl_start_time():
@@ -63,10 +65,7 @@ def test_validate_metadata(runner):
         assert result.exit_code == 2
         assert '>> ' + DIST not in result.output
         assert 'Error: Validation failed.' in result.output
-        message_ja = 'Cause: metadata'
-        message_en = 'Cause: crawlStartTime'
-        message = message_ja if LOCALE == 'ja' else message_en
-        assert message in result.output
+        assert message('Cause', 'metadata', 'crawlStartTime') in result.output
         assert not path.exists(DIST)
 
     def check_default_dataset():
@@ -75,10 +74,7 @@ def test_validate_metadata(runner):
         assert result.exit_code == 2
         assert '>> ' + DIST not in result.output
         assert 'Error: Validation failed.' in result.output
-        message_ja = 'Cause: metadata'
-        message_en = 'Cause: defaultDataset'
-        message = message_ja if LOCALE == 'ja' else message_en
-        assert message in result.output
+        assert message('Cause', 'metadata', 'defaultDataset') in result.output
         assert not path.exists(DIST)
 
     def check_triples():
@@ -87,10 +83,7 @@ def test_validate_metadata(runner):
         assert result.exit_code == 2
         assert '>> ' + DIST not in result.output
         assert 'Error: Validation failed.' in result.output
-        message_ja = 'Cause: metadata'
-        message_en = 'Cause: triples'
-        message = message_ja if LOCALE == 'ja' else message_en
-        assert message in result.output
+        assert message('Cause', 'metadata', 'triples') in result.output
         assert not path.exists(DIST)
 
     def check_errors():
@@ -99,11 +92,13 @@ def test_validate_metadata(runner):
         assert result.exit_code == 2
         assert '>> ' + DIST not in result.output
         assert 'Error: Validation failed.' in result.output
-        messages_ja = ['Cause: metadata']
-        messages_en = ['Cause: endpoint', 'Cause: crawlStartTime', 'Cause: triples']
-        messages = messages_ja if LOCALE == 'ja' else messages_en
-        for message in messages:
-            assert message in result.output
+        messages = [
+            message('Cause', 'metadata', 'endpoint'),
+            message('Cause', 'metadata', 'crawlStartTime'),
+            message('Cause', 'metadata', 'triples'),
+        ]
+        for m in messages:
+            assert m in result.output
         warn_message = 'Warn: '
         assert warn_message not in result.output
         assert not path.exists(DIST)
@@ -117,7 +112,7 @@ def test_validate_metadata(runner):
     check_errors()
 
 
-def test_validate_class_partition(runner):
+def test_validate_class_partition(runner, message):
     TARGET = 'class_partition'
     ASSETS_DIR = path.join(TESTDATA_DIR, TARGET, 'assets')
 
@@ -138,10 +133,7 @@ def test_validate_class_partition(runner):
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
         assert result.exit_code == 0
         assert '>> ' + DIST in result.output
-        message_ja = 'Warn: ClassPartition'
-        message_en = 'Warn: class'
-        message = message_ja if LOCALE == 'ja' else message_en
-        assert message in result.output
+        assert message('Warn', 'ClassPartition', 'class') in result.output
         assert path.exists(DIST)
 
     def check_entities():
@@ -149,10 +141,7 @@ def test_validate_class_partition(runner):
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
         assert result.exit_code == 0
         assert '>> ' + DIST in result.output
-        message_ja = 'Warn: ClassPartition'
-        message_en = 'Warn: entities'
-        message = message_ja if LOCALE == 'ja' else message_en
-        assert message in result.output
+        assert message('Warn', 'ClassPartition', 'entities') in result.output
         assert path.exists(DIST)
 
     def check_warns():
@@ -160,11 +149,12 @@ def test_validate_class_partition(runner):
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
         assert result.exit_code == 0
         assert '>> ' + DIST in result.output
-        messages_ja = ['Warn: ClassPartition']
-        messages_en = ['Warn: class', 'Warn: entities']
-        messages = messages_ja if LOCALE == 'ja' else messages_en
-        for message in messages:
-            assert message in result.output
+        messages = [
+            message('Warn', 'ClassPartition', 'class'),
+            message('Warn', 'ClassPartition', 'entities'),
+        ]
+        for m in messages:
+            assert m in result.output
         error_message = 'Error: '
         assert error_message not in result.output
         assert path.exists(DIST)
@@ -175,7 +165,7 @@ def test_validate_class_partition(runner):
     check_warns()
 
 
-def test_validate_property_partition(runner):
+def test_validate_property_partition(runner, message):
     TARGET = 'property_partition'
     ASSETS_DIR = path.join(TESTDATA_DIR, TARGET, 'assets')
 
@@ -196,10 +186,7 @@ def test_validate_property_partition(runner):
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
         assert result.exit_code == 0
         assert '>> ' + DIST in result.output
-        message_ja = 'Warn: PropertyPartition'
-        message_en = 'Warn: property'
-        message = message_ja if LOCALE == 'ja' else message_en
-        assert message in result.output
+        assert message('Warn', 'PropertyPartition', 'property') in result.output
         assert path.exists(DIST)
 
     def check_triples():
@@ -207,10 +194,7 @@ def test_validate_property_partition(runner):
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
         assert result.exit_code == 0
         assert '>> ' + DIST in result.output
-        message_ja = 'Warn: PropertyPartition'
-        message_en = 'Warn: triples'
-        message = message_ja if LOCALE == 'ja' else message_en
-        assert message in result.output
+        assert message('Warn', 'PropertyPartition', 'triples') in result.output
         assert path.exists(DIST)
 
     def check_warns():
@@ -218,11 +202,12 @@ def test_validate_property_partition(runner):
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
         assert result.exit_code == 0
         assert '>> ' + DIST in result.output
-        messages_ja = ['Warn: PropertyPartition']
-        messages_en = ['Warn: property', 'Warn: triples']
-        messages = messages_ja if LOCALE == 'ja' else messages_en
-        for message in messages:
-            assert message in result.output
+        messages = [
+            message('Warn', 'PropertyPartition', 'property'),
+            message('Warn', 'PropertyPartition', 'triples'),
+        ]
+        for m in messages:
+            assert m in result.output
         error_message = 'Error: '
         assert error_message not in result.output
         assert path.exists(DIST)
