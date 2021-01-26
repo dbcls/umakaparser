@@ -3,15 +3,16 @@
 from collections import defaultdict
 from rdflib import URIRef
 from rdflib.graph import Graph
-from rdflib.namespace import XMLNS, OWL, SKOS, DOAP, FOAF, DC, DCTERMS, VOID, split_uri
+from rdflib.namespace import OWL, SKOS, DOAP, FOAF, DC, DCTERMS, VOID
 from isodate import parse_datetime
 import os
 import json
-from .utils import parse_literal
+from .utils import parse_literal, i18n_t
 from tqdm import tqdm
 import threading
 import sys
 import time
+from .validate import validate_graph
 
 RDFS_CLASS = URIRef('http://rdfs.org/ns/void#class')
 RDFS_ENTITIES = URIRef('http://rdfs.org/ns/void#entities')
@@ -94,6 +95,7 @@ class SBMClassPartition(SMBResource):
 RDFS_PROPERTY = URIRef('http://rdfs.org/ns/void#property')
 RDFS_TRIPLES = URIRef('http://rdfs.org/ns/void#triples')
 CLASS_RELATION = URIRef('http://sparqlbuilder.org/2015/09/rdf-metadata-schema#classRelation')
+
 
 class SBMPropertyPartition(SMBResource):
     RDFS_PROPERTY = URIRef('http://rdfs.org/ns/void#property')
@@ -340,6 +342,7 @@ def property_complete(properties, assets_dir):
         if s in properties_map:
             properties_map[s].label.append(parse_literal(o))
 
+
 NAME_SPACE = (
     ('owl', OWL),
     ('skos', SKOS),
@@ -350,12 +353,14 @@ NAME_SPACE = (
     ('void', VOID)
 )
 
+
 def spinner_gen():
     while 1:
         yield '|'
         yield '/'
         yield '-'
         yield '\\'
+
 
 def build_sbm_model(sbm_ttl, assets_dir, dist):
     graph = Graph()
@@ -364,25 +369,27 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         graph.namespace_manager.bind(prefix, uri)
     asset_reader.load_prefix(graph)
 
-    print('グラフデータを読み込み中...(この処理には時間がかかる場合があります。)')
+    print(i18n_t('cmd.build.info_loading_data'))
     thread = threading.Thread(target=graph.parse, kwargs=dict(location=sbm_ttl, format='turtle'))
     thread.start()
     for spinner in spinner_gen():
-        print(spinner + '\033[1D', end='', file=sys.stdout)
+        sys.stdout.write(spinner + '\033[1D')
         sys.stdout.flush()
         time.sleep(0.2)
-        if not thread.isAlive():
+        if not thread.is_alive():
             break
-    print('グラフデータを読み込みました。')
 
-    print('クラス情報を展開しています...')
+    validate_graph(graph)
+    print(i18n_t('cmd.build.info_loaded_data'))
+
+    print(i18n_t('cmd.build.info_preparing_classes'))
     classes = extraction_classes(graph)
     sub_class_map = defaultdict(list)
     for s, o in asset_reader.read_subject_object('subClassOf', graph):
         sub_class_map[s].append(o)
     structure, classes_map = inheritance_structure(graph, classes, sub_class_map, asset_reader)
 
-    print('プロパティ情報を展開しています...')
+    print(i18n_t('cmd.build.info_preparing_properties'))
     properties = extraction_properties(graph)
     for p in tqdm(properties):
         for relation in p.class_relations:
@@ -395,7 +402,7 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
     classes_detail = class_reference(graph, classes, structure, classes_map, sub_class_map, asset_reader)
     properties = sorted(properties, key=lambda x: x.triples, reverse=True)
 
-    print('メタデータを取得しています...')
+    print(i18n_t('cmd.build.info_getting_metadata'))
     meta_data = make_meta_data(graph)
     meta_data['classes'] = len(classes)
     meta_data['properties'] = len(properties)
@@ -406,9 +413,9 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         'prefixes': {p: n for p, n in graph.namespace_manager.namespaces()},
         'meta_data': meta_data
     }
-    print('データを書き込んでいます。')
+    print(i18n_t('cmd.build.info_writing_data'))
     with open(dist, 'w') as fp:
         json.dump(result, fp, indent=2, ensure_ascii=False)
-    print('クラス数', len(classes))
-    print('述語数', len(properties))
+    print(i18n_t('cmd.build.info_number_of_classes'), len(classes))
+    print(i18n_t('cmd.build.info_number_of_properties'), len(properties))
     return dist

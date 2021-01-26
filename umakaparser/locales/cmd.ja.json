@@ -1,0 +1,28 @@
+{
+  "build_index": {
+    "cmd_help": "\nオントロジーのファイルから、モデルデータ作成のためのassetsを作成します。\n",
+    "opt_help_d": "出力先のディレクトリパス",
+    "info_separating_owl": "オントロジーファイルの分割をしています...",
+    "info_owl_items": "ファイルNo トリプル数 経過時間",
+    "info_collecting_info": "分割したファイルから情報を収集しています...",
+    "error_not_specified": "オントロジーファイルを一つ以上指定してください。",
+    "error_invalid_type": "オントロジーファイルはttlかn3のみ有効です。"
+  },
+  "convert": {
+    "cmd_help": "\nbuild_indexに使えるファイルはturtleかn3形式のみのため、convertを行います。\n"
+  },
+  "build": {
+    "cmd_help": "\nSBMに従うメタデータからモデルデータを作成します。\n",
+    "opt_help_a": "build_indexコマンドで出力されたディレクトリパス",
+    "opt_help_d": "出力先のディレクトリパス",
+    "info_loading_data": "グラフデータを読み込み中...(この処理には時間がかかる場合があります。)",
+    "info_loaded_data": "グラフデータを読み込みました。",
+    "info_preparing_classes": "クラス情報を展開しています...",
+    "info_preparing_properties": "プロパティ情報を展開しています...",
+    "info_getting_metadata": "メタデータを取得しています...",
+    "info_writing_data": "データを書き込んでいます...",
+    "info_number_of_classes": "クラス数",
+    "info_number_of_properties": "述語数",
+    "error_validation_required": "%{cause}に必須の%{item}が存在しません。"
+  }
+}

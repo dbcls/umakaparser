@@ -1,0 +1,28 @@
+{
+  "build_index": {
+    "cmd_help": "\nCreate assets for model data creation from ontology file.\n",
+    "opt_help_d": "Output directory path",
+    "info_separating_owl": "Separating ontology files...",
+    "info_owl_items": "file_no triples elapsed_time",
+    "info_collecting_info": "Collecting information from separated files...",
+    "error_not_specified": "Specify one or more ontology files.",
+    "error_invalid_type": "Only ttl or n3 ontology files are valid."
+  },
+  "convert": {
+    "cmd_help": "\nConvert to turtle or n3 that can be used for build_index.\n"
+  },
+  "build": {
+    "cmd_help": "\nCreate model data from metadata that follows the SBM.\n",
+    "opt_help_a": "The directory output by the build_index command",
+    "opt_help_d": "Output directory path",
+    "info_loading_data": "Loading graph data... (This process may take some time.)",
+    "info_loaded_data": "Loaded graph data.",
+    "info_preparing_classes": "Preparing class information...",
+    "info_preparing_properties": "Preparing property information...",
+    "info_getting_metadata": "Getting metadata...",
+    "info_writing_data": "Writing data...",
+    "info_number_of_classes": "number of classes",
+    "info_number_of_properties": "number of properties",
+    "error_validation_required": "%{item} required for %{cause} does not exist."
+  }
+}

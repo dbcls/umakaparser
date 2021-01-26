@@ -5,11 +5,10 @@ from datetime import datetime
 import tempfile
 import os
 from multiprocessing.pool import Pool
-from time import time
 from shutil import rmtree, move
 import glob
 from itertools import chain
-from .utils import IGNORE_CLASSES
+from .utils import IGNORE_CLASSES, i18n_t
 import resource
 from tqdm import tqdm
 
@@ -19,8 +18,8 @@ from tqdm import tqdm
 def separate_large_owl(owl_file_paths):
     _, hard_limit = resource.getrlimit(resource.RLIMIT_NOFILE)
     resource.setrlimit(resource.RLIMIT_NOFILE, (8192, hard_limit))
-    print('オントロジーファイルの分割をしています...')
-    print('ファイルNo トリプル数 経過時間')
+    print(i18n_t('cmd.build_index.info_separating_owl'))
+    print(i18n_t('cmd.build_index.info_owl_items'))
     fps = [open(file_path, 'r') for file_path in owl_file_paths]
     chain_fp = chain(*fps)
     text = None
@@ -86,7 +85,7 @@ def output_process(args):
         ])
         if p in output_properties and not exclude_if:
             output = output_properties[p]
-            if not output in output_fp:
+            if output not in output_fp:
                 _, file_path = tempfile.mkstemp(dir=os.path.join(base_dir, output))
                 output_fp[output] = open(file_path, 'w')
             fp = output_fp[output]
@@ -129,7 +128,7 @@ def index_owl(owl_file_paths, output_properties, dist):
         os.mkdir(os.path.join(temp_dir, output_property))
 
     os.mkdir(base_dir)
-    print('分割したファイルから情報を収集しています...')
+    print(i18n_t('cmd.build_index.info_collecting_info'))
     try:
         p = Pool()
         with tqdm(total=len(temp_files)) as pbar:
