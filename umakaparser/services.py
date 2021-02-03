@@ -14,8 +14,11 @@ def init_i18n():
     LOCALE_DIR = path.join(FILE_DIR, 'locales')
     i18n.load_path.append(LOCALE_DIR)
     i18n.set('file_format', 'json')
-    LOCALE = getenv('LANG').split('.')[0]
-    i18n.set('locale', LOCALE.split('_')[0])
+    lang = getenv('LANG')
+
+    locale = lang and lang.split('.')[0]
+    locale = locale and locale.split('_')[0]
+    i18n.set('locale', locale)
     i18n.set('fallback', 'en')
     i18n.set('skip_locale_root_data', True)
 
