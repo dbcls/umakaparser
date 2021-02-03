@@ -6,6 +6,8 @@ from click.testing import CliRunner
 from umakaparser.services import build
 from os import path, getenv
 import i18n
+import tempfile
+import shutil
 
 LOCALE = getenv('LANG').split('_')[0]
 FILE_DIR = path.dirname(path.abspath(__file__))
@@ -28,10 +30,11 @@ def message():
 def test_validate_metadata(runner, message):
     TARGET = 'metadata'
     ASSETS_DIR = path.join(TESTDATA_DIR, TARGET, 'assets')
+    DIST_DIR = tempfile.mkdtemp(dir=path.join(TESTDATA_DIR, TARGET))
 
     def make_path(filename):
         testdata = path.join(TESTDATA_DIR, TARGET, '{}.ttl'.format(filename))
-        dist = path.join(TESTDATA_DIR, TARGET, 'dist', '{}.json'.format(filename))
+        dist = path.join(DIST_DIR, '{}.json'.format(filename))
         return testdata, dist
 
     def check_success():
@@ -111,14 +114,17 @@ def test_validate_metadata(runner, message):
     check_triples()
     check_errors()
 
+    shutil.rmtree(DIST_DIR)
+
 
 def test_validate_class_partition(runner, message):
     TARGET = 'class_partition'
     ASSETS_DIR = path.join(TESTDATA_DIR, TARGET, 'assets')
+    DIST_DIR = tempfile.mkdtemp(dir=path.join(TESTDATA_DIR, TARGET))
 
     def make_path(filename):
         testdata = path.join(TESTDATA_DIR, TARGET, '{}.ttl'.format(filename))
-        dist = path.join(TESTDATA_DIR, TARGET, 'dist', '{}.json'.format(filename))
+        dist = path.join(DIST_DIR, '{}.json'.format(filename))
         return testdata, dist
 
     def check_success():
@@ -164,14 +170,17 @@ def test_validate_class_partition(runner, message):
     check_entities()
     check_warns()
 
+    shutil.rmtree(DIST_DIR)
+
 
 def test_validate_property_partition(runner, message):
     TARGET = 'property_partition'
     ASSETS_DIR = path.join(TESTDATA_DIR, TARGET, 'assets')
+    DIST_DIR = tempfile.mkdtemp(dir=path.join(TESTDATA_DIR, TARGET))
 
     def make_path(filename):
         testdata = path.join(TESTDATA_DIR, TARGET, '{}.ttl'.format(filename))
-        dist = path.join(TESTDATA_DIR, TARGET, 'dist', '{}.json'.format(filename))
+        dist = path.join(DIST_DIR, '{}.json'.format(filename))
         return testdata, dist
 
     def check_success():
@@ -216,3 +225,5 @@ def test_validate_property_partition(runner, message):
     check_property()
     check_triples()
     check_warns()
+
+    shutil.rmtree(DIST_DIR)
