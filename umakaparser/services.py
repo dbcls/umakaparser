@@ -62,8 +62,9 @@ def convert(owl_data_files):
 @click.option('--assets', '-a', type=click.Path(exists=True), help=i18n_t('cmd.build.opt_help_a'))
 @click.option('--dist', '-d', default='model.json', type=click.Path(exists=False), help=i18n_t('cmd.build.opt_help_d'))
 def build(sbm_data_ttl, assets=None, dist=None):
-    build_sbm_model(sbm_data_ttl, assets, dist)
-    click.echo('>>> {}'.format(dist))
+    dist_file = build_sbm_model(sbm_data_ttl, assets, dist)
+    if dist_file:
+        click.echo('>>> {}'.format(dist_file))
 
 
 if __name__ == '__main__':

@@ -100,6 +100,9 @@ def validate_property_partition(graph):
     return error_triples
 
 
+class GraphValidationError(Exception):
+    pass
+
 def validate_graph(graph):
 
     errors = []
@@ -107,7 +110,7 @@ def validate_graph(graph):
 
     if 0 < len(errors):
         message = 'Validation failed.\n' + '\n'.join(['Cause: ' + e for e in errors])
-        raise UsageError(message)
+        raise GraphValidationError(message)
 
     warns = []
     warns.extend([error_message('ClassPartition', t) for t in validate_class_partition(graph)])

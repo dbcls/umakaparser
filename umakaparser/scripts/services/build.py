@@ -12,7 +12,7 @@ from tqdm import tqdm
 import threading
 import sys
 import time
-from .validate import validate_graph
+from .validate import validate_graph, GraphValidationError
 
 RDFS_CLASS = URIRef('http://rdfs.org/ns/void#class')
 RDFS_ENTITIES = URIRef('http://rdfs.org/ns/void#entities')
@@ -378,8 +378,11 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         time.sleep(0.2)
         if not thread.is_alive():
             break
-
-    validate_graph(graph)
+    try:
+        validate_graph(graph)
+    except GraphValidationError as e:
+        print(e)
+        return
     print(i18n_t('cmd.build.info_loaded_data'))
 
     print(i18n_t('cmd.build.info_preparing_classes'))
