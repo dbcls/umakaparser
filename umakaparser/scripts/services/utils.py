@@ -37,8 +37,12 @@ def get_type(file_path):
         return 'n3'
 
 
+def auto_encode(msg):
+    return msg.encode('utf-8') if six.PY2 else msg
+
+
 def i18n_t(key, **kwargs):
-    return i18n.t(key, **kwargs).encode('utf-8') if six.PY2 else i18n.t(key, **kwargs)
+    return auto_encode(i18n.t(key, **kwargs))
 
 
 def timer(fn):

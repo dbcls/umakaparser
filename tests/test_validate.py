@@ -47,54 +47,54 @@ def test_validate_metadata(runner, message):
     def check_endpoint():
         TESTDATA, DIST = make_path('error_endpoint')
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
-        assert result.exit_code == 2
+        assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
-        assert 'Error: Validation failed.' in result.output
+        assert 'Validation failed.' in result.output
         assert message('Cause', 'metadata', 'endpoint') in result.output
         assert not path.exists(DIST)
 
     def check_crawl_log():
         TESTDATA, DIST = make_path('error_crawl_log')
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
-        assert result.exit_code == 2
+        assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
-        assert 'Error: Validation failed.' in result.output
+        assert 'Validation failed.' in result.output
         assert message('Cause', 'metadata', 'crawlLog') in result.output
         assert not path.exists(DIST)
 
     def check_crawl_start_time():
         TESTDATA, DIST = make_path('error_crawl_start_time')
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
-        assert result.exit_code == 2
+        assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
-        assert 'Error: Validation failed.' in result.output
+        assert 'Validation failed.' in result.output
         assert message('Cause', 'metadata', 'crawlStartTime') in result.output
         assert not path.exists(DIST)
 
     def check_default_dataset():
         TESTDATA, DIST = make_path('error_default_dataset')
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
-        assert result.exit_code == 2
+        assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
-        assert 'Error: Validation failed.' in result.output
+        assert 'Validation failed.' in result.output
         assert message('Cause', 'metadata', 'defaultDataset') in result.output
         assert not path.exists(DIST)
 
     def check_triples():
         TESTDATA, DIST = make_path('error_triples')
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
-        assert result.exit_code == 2
+        assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
-        assert 'Error: Validation failed.' in result.output
+        assert 'Validation failed.' in result.output
         assert message('Cause', 'metadata', 'triples') in result.output
         assert not path.exists(DIST)
 
     def check_errors():
         TESTDATA, DIST = make_path('errors')
         result = runner.invoke(build, [TESTDATA, '--assets', ASSETS_DIR, '--dist', DIST])
-        assert result.exit_code == 2
+        assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
-        assert 'Error: Validation failed.' in result.output
+        assert 'Validation failed.' in result.output
         messages = [
             message('Cause', 'metadata', 'endpoint'),
             message('Cause', 'metadata', 'crawlStartTime'),
@@ -161,7 +161,7 @@ def test_validate_class_partition(runner, message):
         ]
         for m in messages:
             assert m in result.output
-        error_message = 'Error: '
+        error_message = 'Validation failed.'
         assert error_message not in result.output
         assert path.exists(DIST)
 
@@ -217,7 +217,7 @@ def test_validate_property_partition(runner, message):
         ]
         for m in messages:
             assert m in result.output
-        error_message = 'Error: '
+        error_message = 'Validation failed.'
         assert error_message not in result.output
         assert path.exists(DIST)
 

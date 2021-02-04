@@ -3,8 +3,7 @@
 
 from rdflib import URIRef
 import i18n
-from click import UsageError
-import six
+from .utils import auto_encode
 
 
 def create_triple(s=None, p=None, o=None):
@@ -103,6 +102,7 @@ def validate_property_partition(graph):
 class GraphValidationError(Exception):
     pass
 
+
 def validate_graph(graph):
 
     errors = []
@@ -110,7 +110,7 @@ def validate_graph(graph):
 
     if 0 < len(errors):
         message = 'Validation failed.\n' + '\n'.join(['Cause: ' + e for e in errors])
-        raise GraphValidationError(message)
+        raise GraphValidationError(auto_encode(message))
 
     warns = []
     warns.extend([error_message('ClassPartition', t) for t in validate_class_partition(graph)])
@@ -118,4 +118,4 @@ def validate_graph(graph):
 
     if 0 < len(warns):
         message = '\n'.join(['Warn: ' + w for w in warns])
-        print(message.encode('utf-8') if six.PY2 else message)
+        print(auto_encode(message))
