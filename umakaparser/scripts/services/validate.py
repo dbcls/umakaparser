@@ -109,7 +109,7 @@ def validate_graph(graph):
     errors.extend([error_message('metadata', t) for t in validate_meta_data(graph)])
 
     if 0 < len(errors):
-        message = 'Validation failed.\n' + '\n'.join(['Cause: ' + e for e in errors])
+        message = 'Validation failed.\n' + '\n'.join(['Reason: ' + e for e in errors])
         raise GraphValidationError(auto_encode(message))
 
     warns = []
