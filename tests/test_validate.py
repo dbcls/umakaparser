@@ -50,7 +50,7 @@ def test_validate_metadata(runner, message):
         assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
         assert 'Validation failed.' in result.output
-        assert message('Cause', 'metadata', 'endpoint') in result.output
+        assert message('Reason', 'metadata', 'endpoint') in result.output
         assert not path.exists(DIST)
 
     def check_crawl_log():
@@ -59,7 +59,7 @@ def test_validate_metadata(runner, message):
         assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
         assert 'Validation failed.' in result.output
-        assert message('Cause', 'metadata', 'crawlLog') in result.output
+        assert message('Reason', 'metadata', 'crawlLog') in result.output
         assert not path.exists(DIST)
 
     def check_crawl_start_time():
@@ -68,7 +68,7 @@ def test_validate_metadata(runner, message):
         assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
         assert 'Validation failed.' in result.output
-        assert message('Cause', 'metadata', 'crawlStartTime') in result.output
+        assert message('Reason', 'metadata', 'crawlStartTime') in result.output
         assert not path.exists(DIST)
 
     def check_default_dataset():
@@ -77,7 +77,7 @@ def test_validate_metadata(runner, message):
         assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
         assert 'Validation failed.' in result.output
-        assert message('Cause', 'metadata', 'defaultDataset') in result.output
+        assert message('Reason', 'metadata', 'defaultDataset') in result.output
         assert not path.exists(DIST)
 
     def check_triples():
@@ -86,7 +86,7 @@ def test_validate_metadata(runner, message):
         assert result.exit_code == 0
         assert '>> ' + DIST not in result.output
         assert 'Validation failed.' in result.output
-        assert message('Cause', 'metadata', 'triples') in result.output
+        assert message('Reason', 'metadata', 'triples') in result.output
         assert not path.exists(DIST)
 
     def check_errors():
@@ -96,9 +96,9 @@ def test_validate_metadata(runner, message):
         assert '>> ' + DIST not in result.output
         assert 'Validation failed.' in result.output
         messages = [
-            message('Cause', 'metadata', 'endpoint'),
-            message('Cause', 'metadata', 'crawlStartTime'),
-            message('Cause', 'metadata', 'triples'),
+            message('Reason', 'metadata', 'endpoint'),
+            message('Reason', 'metadata', 'crawlStartTime'),
+            message('Reason', 'metadata', 'triples'),
         ]
         for m in messages:
             assert m in result.output
