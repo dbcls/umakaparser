@@ -72,8 +72,8 @@ def validate_class_partition(graph):
         URIRef('http://rdfs.org/ns/void#entities'),
     ]
 
-    for subject, predicates in zip(class_subjects, class_predicates):
-        missing_triples = [create_triple(s=subject, p=rp) for rp in required_predicates if rp not in predicates]
+    for predicates in class_predicates:
+        missing_triples = [create_triple(p=rp) for rp in required_predicates if rp not in predicates]
         error_triples.extend(missing_triples)
 
     return error_triples
@@ -92,8 +92,8 @@ def validate_property_partition(graph):
         URIRef('http://rdfs.org/ns/void#triples'),
     ]
 
-    for subject, predicates in zip(property_subjects, property_predicates):
-        missing_triples = [create_triple(s=subject, p=rp) for rp in required_predicates if rp not in predicates]
+    for predicates in property_predicates:
+        missing_triples = [create_triple(p=rp) for rp in required_predicates if rp not in predicates]
         error_triples.extend(missing_triples)
 
     return error_triples
