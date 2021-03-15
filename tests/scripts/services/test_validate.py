@@ -2,22 +2,16 @@
 
 
 import pytest
-from click.testing import CliRunner
 from umakaparser.services import build
-from os import path, getenv
+from os import path
 import i18n
 import tempfile
 import shutil
 
-LOCALE = getenv('LANG').split('_')[0]
-FILE_DIR = path.dirname(path.abspath(__file__))
-FIXTURE_DIR = path.join(FILE_DIR, 'fixture')
-TESTDATA_DIR = path.join(FIXTURE_DIR, 'validate')
-
 
 @pytest.fixture
-def runner():
-    return CliRunner()
+def TESTDATA_DIR(fixture_dir):
+    return path.join(fixture_dir, 'validate')
 
 
 @pytest.fixture
@@ -27,7 +21,7 @@ def message():
     return format
 
 
-def test_validate_metadata(runner, message):
+def test_validate_metadata(runner, message, TESTDATA_DIR):
     TARGET = 'metadata'
     ASSETS_DIR = path.join(TESTDATA_DIR, TARGET, 'assets')
     DIST_DIR = tempfile.mkdtemp(dir=path.join(TESTDATA_DIR, TARGET))
@@ -117,7 +111,7 @@ def test_validate_metadata(runner, message):
     shutil.rmtree(DIST_DIR)
 
 
-def test_validate_class_partition(runner, message):
+def test_validate_class_partition(runner, message, TESTDATA_DIR):
     TARGET = 'class_partition'
     ASSETS_DIR = path.join(TESTDATA_DIR, TARGET, 'assets')
     DIST_DIR = tempfile.mkdtemp(dir=path.join(TESTDATA_DIR, TARGET))
@@ -173,7 +167,7 @@ def test_validate_class_partition(runner, message):
     shutil.rmtree(DIST_DIR)
 
 
-def test_validate_property_partition(runner, message):
+def test_validate_property_partition(runner, message, TESTDATA_DIR):
     TARGET = 'property_partition'
     ASSETS_DIR = path.join(TESTDATA_DIR, TARGET, 'assets')
     DIST_DIR = tempfile.mkdtemp(dir=path.join(TESTDATA_DIR, TARGET))
