@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 # 複数のturtleファイルを5万tripleを1つのチャンクとして
 # テンポラリファイルに分割する。
-def separate_large_owl(owl_file_paths):
+def separate_large_owl(owl_file_paths, maximum_lines_per_file):
     _, hard_limit = resource.getrlimit(resource.RLIMIT_NOFILE)
     resource.setrlimit(resource.RLIMIT_NOFILE, (8192, hard_limit))
     print(i18n_t('cmd.build_index.info_separating_owl'))
@@ -52,7 +52,7 @@ def separate_large_owl(owl_file_paths):
         text += row + '\n'
         if row.endswith(' .'):
             count += 1
-            if count == 50000:
+            if count == maximum_lines_per_file:
                 name = output(text)
                 text = None
                 temp_files.append(name)
@@ -118,7 +118,8 @@ def join_process(args):
 
 
 def index_owl(owl_file_paths, output_properties, dist):
-    prefix, temp_files, temp_dir = separate_large_owl(owl_file_paths)
+    maximum_lines_per_file = 50000
+    prefix, temp_files, temp_dir = separate_large_owl(owl_file_paths, maximum_lines_per_file)
     base_dir = os.path.join(os.getcwd(), dist)
 
     if os.path.exists(base_dir):
