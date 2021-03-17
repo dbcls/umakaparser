@@ -46,7 +46,7 @@ def separate_large_owl(owl_file_paths, maximum_lines_per_file):
             continue
 
         if row[0:7].lower() == '@prefix':
-            prefix += row
+            prefix += row + '\n'
             continue
 
         text += row + '\n'
