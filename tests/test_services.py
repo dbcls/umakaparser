@@ -1,4 +1,4 @@
-from umakaparser.services import init_i18n, cmd
+from umakaparser.services import init_i18n
 
 
 def test_init_18n():
