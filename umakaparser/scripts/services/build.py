@@ -192,7 +192,9 @@ class AssetReader(object):
             with open(os.path.join(self.assets_dir, filename)) as fp:
                 for row in fp:
                     row = row.strip()
-                    yield tuple(map(lambda x: URIRef(x[1:-1]).n3(graph.namespace_manager).strip('<>'), row.split(' ', 1)))
+                    obj = json.loads(row)
+                    so = obj['s'], obj['o']
+                    yield tuple(map(lambda x: URIRef(x[1:-1]).n3(graph.namespace_manager).strip('<>'), so))
         except IOError:
             return
 
@@ -202,8 +204,8 @@ class AssetReader(object):
         try:
             with open(os.path.join(self.assets_dir, filename)) as fp:
                 for row in fp:
-                    row = row.strip()
-                    s, o = row.split(' ', 1)
+                    obj = json.loads(row)
+                    s, o = obj['s'], obj['o']
                     yield URIRef(s[1:-1]).n3(graph.namespace_manager).strip('<>'), parse_literal(o)
         except IOError:
             return

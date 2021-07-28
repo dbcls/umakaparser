@@ -11,6 +11,7 @@ from itertools import chain
 from .utils import IGNORE_CLASSES, i18n_t
 import resource
 from tqdm import tqdm
+import json
 
 
 # 複数のturtleファイルを5万tripleを1つのチャンクとして
@@ -89,7 +90,8 @@ def output_process(args):
                 _, file_path = tempfile.mkstemp(dir=os.path.join(base_dir, output))
                 output_fp[output] = open(file_path, 'w')
             fp = output_fp[output]
-            fp.write('{} {}\n'.format(s.n3(), o.n3()))
+            fp.write(json.dumps({'s': s.n3(), 'o': o.n3()}))
+            fp.write('\n')
     for fp in output_fp.values():
         fp.close()
 
