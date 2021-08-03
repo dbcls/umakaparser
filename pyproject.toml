@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "umakaparser"
-version = "0.1.5"
+version = "0.1.6"
 description = ""
 authors = ["DBCLS"]
 license = "MIT"
@@ -8,24 +8,21 @@ repository = "https://github.com/dbcls/umakaparser"
 homepage = "http://umaka-viewer.dbcls.jp/"
 keywords = ['dbcls', 'rdf']
 classifiers = [
-    'Programming Language :: Python :: 2',
-    'Programming Language :: Python :: 2.7',
     'Programming Language :: Python :: 3',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
-    'Programming Language :: Python :: 3.6',
     'Programming Language :: Python :: 3.7',
+    'Programming Language :: Python :: 3.8',
+    'Programming Language :: Python :: 3.9',
     'License :: OSI Approved :: MIT License',
 ]
 
 [tool.poetry.dependencies]
-python = "^2.7 || >=3.5"
+python = ">=3.7"
 click = "^7.0"
 isodate = "^0.6.0"
 pyparsing = "^2.4"
-rdflib = "^5.0"
 tqdm = "^4.52.0"
 python-i18n = "^0.3.9"
+rdflib = "^6.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
