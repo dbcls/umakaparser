@@ -12,5 +12,6 @@ def convert2ttl(owl_files):
         ttl_file = splitext(owl_file)[0] + '.ttl'
         with open(ttl_file, 'wb') as fp:
             hoge = graph.serialize(format='turtle')
-            fp.write(hoge)
+            fuga = hoge.encode() if isinstance(hoge, str) else hoge
+            fp.write(fuga)
         print('>>>', ttl_file)
