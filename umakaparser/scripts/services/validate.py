@@ -1,7 +1,8 @@
 # coding:utf-8
 
 
-from rdflib import URIRef
+from sys import prefix
+from rdflib import URIRef, Graph
 import i18n
 from .utils import auto_encode
 
@@ -119,3 +120,17 @@ def validate_graph(graph):
     if 0 < len(warns):
         message = '\n'.join(['Warn: ' + w for w in warns])
         print(auto_encode(message))
+
+
+def validate_namespace_duplication(filepath: str, graph: Graph):
+    prefixes = {a: b for a, b in graph.namespaces()}
+    with open(filepath) as fp:
+        for row in fp:
+            row = row.strip().lower().replace('@prefix ', '', 1).rstrip('. ')
+            prefix, url = row.split(':', 1)
+            url = url.strip().lstrip('<').rstrip('>')
+            # print(prefix, url)
+            ref = URIRef(url)
+            if prefix in prefixes and str(prefixes[prefix]).lower() != str(ref):
+                print(f'prefix宣言: {prefix}が重複しています。({prefixes[prefix]}, {ref})')
+            prefixes[prefix] = ref
