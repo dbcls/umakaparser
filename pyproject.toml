@@ -19,7 +19,7 @@ classifiers = [
 python = ">=3.7"
 click = "^8.0"
 isodate = "^0.6.0"
-pyparsing = "^2.4"
+pyparsing = "^3.0"
 tqdm = "^4.52.0"
 python-i18n = "^0.3.9"
 rdflib = "^6.0.0"
