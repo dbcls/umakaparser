@@ -12,7 +12,7 @@ from tqdm import tqdm
 import threading
 import sys
 import time
-from .validate import validate_graph, GraphValidationError
+from .validate import validate_graph, validate_namespace_duplication, GraphValidationError
 
 RDFS_CLASS = URIRef('http://rdfs.org/ns/void#class')
 RDFS_ENTITIES = URIRef('http://rdfs.org/ns/void#entities')
@@ -210,11 +210,12 @@ class AssetReader(object):
         except IOError:
             return
 
-    def load_prefix(self, graph):
+    def load_prefix(self, graph: Graph):
         if not self.assets_dir:
             return
         try:
             path = os.path.join(self.assets_dir, 'prefix.ttl')
+            validate_namespace_duplication(path, graph)
             with open(path) as fp:
                 graph.parse(file=fp, format='turtle')
         except IOError:
