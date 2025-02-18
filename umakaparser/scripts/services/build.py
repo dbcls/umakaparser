@@ -30,7 +30,7 @@ class ClassResource(object):
         self.subClassOf = None
 
     def serialize(self):
-        result = {'label': labels_lang(self.label)}
+        result = {}
         if self.subClassOf:
             result['subClassOf'] = self.subClassOf
         return result
@@ -312,10 +312,6 @@ def class_reference(graph, classes, structure, classes_map, sub_class_map, asset
 
     for top in structure:
         flat_structure(top)
-
-    for s, o in asset_reader.read_subject_literal('label', graph):
-        if s in classes_map:
-            classes_map[s].label.append(o)
 
     for s, o in classes_map.items():
         if s in sub_class_map:
