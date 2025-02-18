@@ -240,6 +240,14 @@ def extraction_properties(graph):
     return properties
 
 
+def get_labels(graph, asset_reader):
+    labels = {}
+    for s, o in asset_reader.read_subject_literal('label', graph):
+        if s not in labels:
+            labels[s] = []
+        labels[s].append(o)
+    return {uri: labels_lang(labels[uri]) for uri in labels}
+
 def inheritance_structure(graph, classes, sub_class_map, asset_reader):
     same_as_group = {}
     for s, o in asset_reader.read_subject_object('sameAs', graph):
@@ -371,6 +379,7 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
     for prefix, uri in NAME_SPACE:
         graph.namespace_manager.bind(prefix, uri)
     asset_reader.load_prefix(graph)
+    get_labels(graph, asset_reader)
 
     print(i18n_t('cmd.build.info_loading_data'))
     thread = threading.Thread(target=graph.parse, kwargs=dict(location=sbm_ttl, format='turtle'))
@@ -417,7 +426,8 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         'classes': classes_detail,
         'properties': [p.serialize(classes_detail) for p in properties],
         'prefixes': {p: n for p, n in graph.namespace_manager.namespaces()},
-        'meta_data': meta_data
+        'meta_data': meta_data,
+        'labels': get_labels(graph, asset_reader)
     }
     print(i18n_t('cmd.build.info_writing_data'))
     with open(dist, 'w') as fp:
