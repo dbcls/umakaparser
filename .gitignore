@@ -90,3 +90,6 @@ ENV/
 .ropeproject
 .DS_Store
 .vscode
+
+# assets folder
+assets/

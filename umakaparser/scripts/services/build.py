@@ -30,7 +30,7 @@ class ClassResource(object):
         self.subClassOf = None
 
     def serialize(self):
-        result = {'label': labels_lang(self.label)}
+        result = {}
         if self.subClassOf:
             result['subClassOf'] = self.subClassOf
         return result
@@ -240,6 +240,14 @@ def extraction_properties(graph):
     return properties
 
 
+def get_labels(graph, asset_reader):
+    labels = {}
+    for s, o in asset_reader.read_subject_literal('label', graph):
+        if s not in labels:
+            labels[s] = []
+        labels[s].append(o)
+    return {uri: labels_lang(labels[uri]) for uri in labels}
+
 def inheritance_structure(graph, classes, sub_class_map, asset_reader):
     same_as_group = {}
     for s, o in asset_reader.read_subject_object('sameAs', graph):
@@ -305,10 +313,6 @@ def class_reference(graph, classes, structure, classes_map, sub_class_map, asset
     for top in structure:
         flat_structure(top)
 
-    for s, o in asset_reader.read_subject_literal('label', graph):
-        if s in classes_map:
-            classes_map[s].label.append(o)
-
     for s, o in classes_map.items():
         if s in sub_class_map:
             o.subClassOf = sub_class_map[s]
@@ -371,6 +375,7 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
     for prefix, uri in NAME_SPACE:
         graph.namespace_manager.bind(prefix, uri)
     asset_reader.load_prefix(graph)
+    get_labels(graph, asset_reader)
 
     print(i18n_t('cmd.build.info_loading_data'))
     thread = threading.Thread(target=graph.parse, kwargs=dict(location=sbm_ttl, format='turtle'))
@@ -417,7 +422,8 @@ def build_sbm_model(sbm_ttl, assets_dir, dist):
         'classes': classes_detail,
         'properties': [p.serialize(classes_detail) for p in properties],
         'prefixes': {p: n for p, n in graph.namespace_manager.namespaces()},
-        'meta_data': meta_data
+        'meta_data': meta_data,
+        'labels': get_labels(graph, asset_reader)
     }
     print(i18n_t('cmd.build.info_writing_data'))
     with open(dist, 'w') as fp:
